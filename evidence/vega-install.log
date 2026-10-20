@@ -1,0 +1,155 @@
+Logging to /Users/dev/vega/vvm/vvm-2026-10-21.log
+
+*** [1mGreetings from Vega![22m ***
+
+This script downloads and installs the Vega CLI.
+
+[!] The Vega SDK and its packaged tools collect telemetry by default.
+For details about the types of telemetry collected or instructions on how to opt out,
+visit https://developer.amazon.com/docs/vega/latest/telemetry.html.
+
+Getting latest Vega CLI version...
+Installing Vega CLI 1.4.5...
+
+Installing [------------------------------]   0%     
+Installing [------------------------------]   1%     
+Installing [------------------------------]   2%     
+Installing [------------------------------]   3%     
+Installing [=-----------------------------]   4%     
+Installing [=-----------------------------]   5%     
+Installing [=-----------------------------]   6%     
+Installing [==----------------------------]   7%     
+Installing [==----------------------------]   8%     
+Installing [==----------------------------]   9%     
+Installing [===---------------------------]  10%     
+Installing [===---------------------------]  11%     
+Installing [===---------------------------]  12%     
+Installing [===---------------------------]  13%     
+Installing [====--------------------------]  14%     
+Installing [====--------------------------]  15%     
+Installing [====--------------------------]  16%     
+Installing [=====-------------------------]  17%     
+Installing [=====-------------------------]  18%     
+Installing [=====-------------------------]  19%     
+Installing [======------------------------]  20%     
+Installing [======------------------------]  21%     
+Installing [======------------------------]  22%     
+Installing [======------------------------]  23%     
+Installing [=======-----------------------]  24%     
+Installing [=======-----------------------]  25%     
+Installing [=======-----------------------]  26%     
+Installing [========----------------------]  27%     
+Installing [========----------------------]  28%     
+Installing [========----------------------]  29%     
+Installing [=========---------------------]  30%     
+Installing [=========---------------------]  31%     
+Installing [=========---------------------]  32%     
+Installing [=========---------------------]  33%     
+Installing [==========--------------------]  34%     
+Installing [==========--------------------]  35%     
+Installing [==========--------------------]  36%     
+Installing [===========-------------------]  37%     
+Installing [===========-------------------]  38%     
+Installing [===========-------------------]  39%     
+Installing [============------------------]  40%     
+Installing [============------------------]  41%     
+Installing [============------------------]  42%     
+Installing [============------------------]  43%     
+Installing [=============-----------------]  44%     
+Installing [=============-----------------]  45%     
+Installing [=============-----------------]  46%     
+Installing [==============----------------]  47%     
+Installing [==============----------------]  48%     
+Installing [==============----------------]  49%     
+Installing [===============---------------]  50%     
+Installing [===============---------------]  51%     
+Installing [===============---------------]  52%     
+Installing [===============---------------]  53%     
+Installing [================--------------]  54%     
+Installing [================--------------]  55%     
+Installing [================--------------]  56%     
+Installing [=================-------------]  57%     
+Installing [=================-------------]  58%     
+Installing [=================-------------]  59%     
+Installing [==================------------]  60%     
+Installing [==================------------]  61%     
+Installing [==================------------]  62%     
+Installing [==================------------]  63%     
+Installing [===================-----------]  64%     
+Installing [===================-----------]  65%     
+Installing [===================-----------]  66%     
+Installing [====================----------]  67%     
+Installing [====================----------]  68%     
+Installing [====================----------]  69%     
+Installing [=====================---------]  70%     
+Installing [=====================---------]  71%     
+Installing [=====================---------]  72%     
+Installing [=====================---------]  73%     
+Installing [======================--------]  74%     
+Installing [======================--------]  75%     
+Installing [======================--------]  76%     
+Installing [=======================-------]  77%     
+Installing [=======================-------]  78%     
+Installing [=======================-------]  79%     
+Installing [========================------]  80%     
+Installing [========================------]  81%     
+Installing [========================------]  82%     
+Installing [========================------]  83%     
+Installing [=========================-----]  84%     
+Installing [=========================-----]  85%     
+Installing [=========================-----]  86%     
+Installing [==========================----]  87%     
+Installing [==========================----]  88%     
+Installing [==========================----]  89%     
+Installing [===========================---]  90%     
+Installing [===========================---]  91%     
+Installing [===========================---]  92%     
+Installing [===========================---]  93%     
+Installing [============================--]  94%     
+Installing [============================--]  95%     
+Installing [============================--]  96%     
+Installing [=============================-]  97%     
+Installing [=============================-]  98%     
+Installing [=============================-]  99%     
+Installing [==============================] 100%     
+Vega CLI 1.4.5 installed to /Users/dev/vega/bin
+Setting up Vega CLI...
+Component installation directory configured: /Users/dev/vega/sdk
+Configuration saved to: /Users/dev/vega/config.json
+[OK] Vega CLI set up 
+
+[OK] SDK linking not available, skipping
+
+* To manually link SDKs, run: vega sdk link --path <sdk_path>
+
+Downloading Vega SDK 0.24.12112...
+Extracting SDK...
+
+Installing SDK...
+Extracting VVD...
+
+Installing VVD...
+Installation complete. Version 0.24.12112 has been installed.
+Version 0.24.12112 has been set as the default version.
+Installed [OK]
+Installed SDK Versions:
+
+Channel: main
+→ 0.24.12112 - Active SDK Version
+
+Total: 1 versions
+
+* Visual Studio Code not found. Unable to install Vega Studio extension.
+You may install Vega Studio from VSCode Marketplace: https://marketplace.visualstudio.com/items?itemName=amazon-devices.kepler-studio
+
+[!] Symlinked [1mvega[22m to [1mkepler[22m for backward compatibility.
+Use [1mvega[22m directly for all future invocations.
+Modified shell .rc files: /Users/dev/.bashrc /Users/dev/.zshrc /Users/dev/.bash_profile /Users/dev/.zprofile /Users/dev/.profile
+
+
+*** You're all set!
+
+* Show installed Vega SDKs: vega sdk list-installed
+* List available SDK versions to install: vega sdk list-remote
+* Build your first app with the CLI or in Vega Studio: https://developer.amazon.com/docs/vega/latest/hello-world.html
+/bin/bash /tmp/get_vvm.sh  152.45s user 24.46s system 47% cpu 6:13.09 total

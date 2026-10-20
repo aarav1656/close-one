@@ -1,0 +1,49 @@
+{
+  "name": "clutch-vega",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "react-native start",
+    "test": "jest --ci --watchAll=false --no-watchman",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build:debug": "react-native build-kepler --build-type Debug",
+    "build:release": "react-native build-kepler --build-type Release",
+    "vvd:install": "vega device install-app -b Debug --dir .",
+    "vvd:launch": "vega device launch-app --appName com.clutch.tv.main"
+  },
+  "dependencies": {
+    "@amazon-devices/kepler-module-resolver-preset": "^0.1.15",
+    "@amazon-devices/react-native-kepler": "~4.0.0+rn0.83.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "react": "19.2.0",
+    "react-native": "0.83.0",
+    "react-native-safe-area-context": "^5.5.2"
+  },
+  "devDependencies": {
+    "@amazon-devices/kepler-cli-platform": "0.22.13-rn-83",
+    "@amazon-devices/keplerscript-commonmodules": "^1.0.0",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "^20.0.0",
+    "@react-native/babel-preset": "0.83.0",
+    "@react-native/metro-config": "0.83.0",
+    "@react-native/typescript-config": "0.83.0",
+    "@types/jest": "^29.5.0",
+    "@types/react": "^19.2.0",
+    "@types/react-test-renderer": "^19.1.0",
+    "babel-jest": "^29.6.3",
+    "jest": "^29.6.3",
+    "react-test-renderer": "19.2.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "5.8.3"
+  },
+  "kepler": {
+    "projectType": "application",
+    "appName": "Clutch",
+    "targets": [
+      "tv"
+    ]
+  }
+}

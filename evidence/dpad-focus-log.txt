@@ -1,0 +1,5 @@
+com.clutch.tv[12435]: 547725635872 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_FOCUS games
+com.clutch.tv[12435]: 547725635872 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_FOCUS service
+com.clutch.tv[12435]: 547725635872 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_FOCUS games
+com.clutch.tv[12435]: 547725635872 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_FOCUS service
+com.clutch.tv[12435]: 547725635872 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_FOCUS about
