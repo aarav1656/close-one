@@ -1,0 +1,13 @@
+{
+  "name": "clutch-server",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/model.test.mjs && node test/mutate.mjs",
+    "fetch": "node eval/fetch-season.mjs",
+    "eval": "node eval/season.mjs",
+    "live": "node live.mjs"
+  },
+  "dependencies": {"ws": "^8.18.0"}
+}

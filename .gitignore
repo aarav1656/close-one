@@ -5,3 +5,7 @@ buildinfo.json
 *.ppm
 third_party/
 .tmp/
+.progress/
+server/data/
+server/logs/
+server/node_modules/
