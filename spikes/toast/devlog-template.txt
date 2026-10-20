@@ -1,0 +1,90 @@
+Oct 20 21:19:06.777181 daemon.info splashservice[2134]:  [2026-10-20 21:19:06.777] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazon.keplerlauncherapp.main appInstId 1
+Oct 20 21:19:10.743501 daemon.info splashservice[2134]:  [2026-10-20 21:19:10.742] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.clutch.tv.main appInstId 70
+Oct 20 21:19:23.896213 daemon.info splashservice[2134]:  [2026-10-20 21:19:23.894] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazondeveloper.keplervideoapp.main appInstId 73
+Oct 20 21:19:36.869846 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=1 channel=template
+Oct 20 21:19:36.998733 daemon.info notification_re[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:19:37.067857 daemon.info splashservice[2134]:  [2026-10-20 21:19:37.067] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazon.notification.renderer.ui appInstId 76
+Oct 20 21:19:45.073014 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:19:48.902869 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=2 channel=template
+Oct 20 21:19:48.951738 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:19:57.019704 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:20:00.947975 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=3 channel=template
+Oct 20 21:20:00.961301 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:20:09.091520 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:20:12.986708 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=4 channel=template
+Oct 20 21:20:13.003837 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:20:21.058653 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:20:25.028847 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=5 channel=template
+Oct 20 21:20:25.039567 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:20:33.113356 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:20:37.060778 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=6 channel=template
+Oct 20 21:20:37.089902 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:20:45.155639 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:20:49.097298 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=7 channel=template
+Oct 20 21:20:49.124847 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:20:57.202297 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:21:01.136989 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=8 channel=template
+Oct 20 21:21:01.151117 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:21:09.263650 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:21:13.171765 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=9 channel=template
+Oct 20 21:21:13.198413 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:21:21.261349 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:21:25.213523 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=10 channel=template
+Oct 20 21:21:25.221428 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:21:33.340728 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:21:37.254930 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=11 channel=template
+Oct 20 21:21:37.280026 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:21:45.375238 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:21:49.294636 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=12 channel=template
+Oct 20 21:21:49.310601 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:21:57.422425 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:22:01.345088 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=13 channel=template
+Oct 20 21:22:01.362972 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:22:09.450406 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:22:13.368727 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=14 channel=template
+Oct 20 21:22:13.384858 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:22:21.484623 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:22:25.412534 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=15 channel=template
+Oct 20 21:22:25.418355 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:22:33.498705 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:22:37.448872 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=16 channel=template
+Oct 20 21:22:37.467222 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:22:45.560441 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:22:49.475012 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=17 channel=template
+Oct 20 21:22:49.500577 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:22:57.596660 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:23:01.512439 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=18 channel=template
+Oct 20 21:23:01.530239 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:23:09.610754 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:23:13.559625 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=19 channel=template
+Oct 20 21:23:13.576844 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:23:21.653942 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:23:25.588310 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=20 channel=template
+Oct 20 21:23:25.600157 daemon.info com.amazon.notification.renderer[9751]: 2 I Inputd-client:requestPriority:431: Client Requesting Priority 224: SYSTEMUI_PRIORITY
+Oct 20 21:23:33.666194 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:23:37.601626 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:39.605804 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1194732.323443,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:39.605846 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:41.612892 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1196739.471402,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:41.612938 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:43.616392 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1198743.08082,"_type":"error","_bubbles":false,"_cancelable
+Oct 20 21:23:43.616564 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:45.620525 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1200747.159196,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:45.620563 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:47.622983 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1202749.737739,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:47.623007 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:49.624084 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1204750.871573,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:49.624104 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:51.628819 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1206755.374782,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:51.628889 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:53.633765 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1208760.369117,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:53.633842 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:55.761595 daemon.info splashservice[2134]:  [2026-10-20 21:23:55.761] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazon.keplerlauncherapp.main appInstId 1
+Oct 20 21:23:59.703775 daemon.info splashservice[2134]:  [2026-10-20 21:23:59.701] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.clutch.tv.main appInstId 77
+Oct 20 21:24:12.857799 daemon.info splashservice[2134]:  [2026-10-20 21:24:12.845] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazondeveloper.keplervideoapp.main appInstId 79
+Oct 20 21:24:25.796404 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=1 channel=NotATemplateName
+Oct 20 21:24:25.983222 daemon.info splashservice[2134]:  [2026-10-20 21:24:25.983] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazon.notification.renderer.ui appInstId 82
+Oct 20 21:24:37.823919 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=2 channel=NotATemplateName
+Oct 20 21:24:49.869571 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=3 channel=NotATemplateName
+Oct 20 21:25:01.907511 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=4 channel=NotATemplateName
+Oct 20 21:25:13.954491 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=5 channel=NotATemplateName

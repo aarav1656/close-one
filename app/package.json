@@ -7,12 +7,13 @@
     "start": "react-native start",
     "test": "jest --ci --watchAll=false --no-watchman",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "build:debug": "react-native build-kepler --build-type Debug",
-    "build:release": "react-native build-kepler --build-type Release",
+    "build:debug": "react-native build-vega --build-type Debug",
+    "build:release": "react-native build-vega --build-type Release",
     "vvd:install": "vega device install-app -b Debug --dir .",
     "vvd:launch": "vega device launch-app --appName com.clutch.tv.main"
   },
   "dependencies": {
+    "@amazon-devices/headless-task-manager": "~1.2.8",
     "@amazon-devices/kepler-module-resolver-preset": "^0.1.15",
     "@amazon-devices/react-native-kepler": "~4.0.0+rn0.83.0",
     "babel-plugin-module-resolver": "^5.0.2",
@@ -44,6 +45,7 @@
     "appName": "Clutch",
     "targets": [
       "tv"
-    ]
+    ],
+    "useSystemJsBundlesForHeadlessJs": false
   }
 }

@@ -16,9 +16,45 @@ runtime-module = "/com.amazon.kepler.runtime.react_native_kepler_4@IReactNativeK
 launch-type = "singleton"
 categories = ["com.amazon.category.main"]
 
+# Keeps running while another app is in front: holds the WebSocket and posts a toast.
+# The app starts it by URI (src/App.tsx).
+[[components.service]]
+id = "com.clutch.tv.cue.service"
+runtime-module = "/com.amazon.kepler.runtime.react_native_kepler_4@IReactNativeKepler_0"
+launch-type = "singleton"
+
+[processes]
+[[processes.group]]
+id = "main"
+component-ids = ["com.clutch.tv.main"]
+
+[[processes.group]]
+id = "cue_service"
+component-ids = ["com.clutch.tv.cue.service"]
+
+[wants]
+[[wants.service]]
+id = "com.clutch.tv.cue.service"
+
+[[wants.privilege]]
+id = "com.amazon.notification.privilege.post"
+
 [needs]
+[[needs.privilege]]
+id = "com.amazon.network.privilege.net-info"
+
 [[needs.module]]
 id = "/com.amazon.vega.os@IVega_1_2"
 
 [[needs.module]]
+id = "/com.amazon.kepler.headless_task_manager_1@IHeadlessTaskManager_2"
+
+[[needs.module]]
 id = "/com.amazon.kepler.keplerscript_4@IKeplerScript_0"
+
+[offers]
+[[offers.service]]
+id = "com.clutch.tv.cue.service"
+
+[[offers.interaction]]
+id = "com.clutch.tv.main"

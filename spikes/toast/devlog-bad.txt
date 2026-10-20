@@ -1,0 +1,67 @@
+Oct 20 21:23:33.666194 daemon.warning com.amazon.notification.renderer[9751]: 2 W Inputd-client:disconnect:349: Already Disconnected
+Oct 20 21:23:37.601626 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:39.605804 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1194732.323443,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:39.605846 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:41.612892 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1196739.471402,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:41.612938 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:43.616392 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1198743.08082,"_type":"error","_bubbles":false,"_cancelable
+Oct 20 21:23:43.616564 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:45.620525 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1200747.159196,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:45.620563 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:47.622983 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1202749.737739,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:47.623007 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:49.624084 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1204750.871573,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:49.624104 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:51.628819 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1206755.374782,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:51.628889 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:53.633765 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1208760.369117,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:23:53.633842 local0.info com.clutch.tv[9444]: 547352334624 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:23:55.761595 daemon.info splashservice[2134]:  [2026-10-20 21:23:55.761] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazon.keplerlauncherapp.main appInstId 1
+Oct 20 21:23:59.703775 daemon.info splashservice[2134]:  [2026-10-20 21:23:59.701] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.clutch.tv.main appInstId 77
+Oct 20 21:24:12.857799 daemon.info splashservice[2134]:  [2026-10-20 21:24:12.845] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazondeveloper.keplervideoapp.main appInstId 79
+Oct 20 21:24:25.796404 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=1 channel=NotATemplateName
+Oct 20 21:24:25.983222 daemon.info splashservice[2134]:  [2026-10-20 21:24:25.983] [INFO] [eventHandler:160] EVT [event://com.amazon.lcm/state-change/foreground] Got the appID com.amazon.notification.renderer.ui appInstId 82
+Oct 20 21:24:37.823919 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=2 channel=NotATemplateName
+Oct 20 21:24:49.869571 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=3 channel=NotATemplateName
+Oct 20 21:25:01.907511 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=4 channel=NotATemplateName
+Oct 20 21:25:13.954491 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=5 channel=NotATemplateName
+Oct 20 21:25:25.982858 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=6 channel=NotATemplateName
+Oct 20 21:25:38.011523 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=7 channel=NotATemplateName
+Oct 20 21:25:50.035042 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=8 channel=NotATemplateName
+Oct 20 21:26:02.065430 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=9 channel=NotATemplateName
+Oct 20 21:26:14.100721 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=10 channel=NotATemplateName
+Oct 20 21:26:26.133902 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=11 channel=NotATemplateName
+Oct 20 21:26:38.160094 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=12 channel=NotATemplateName
+Oct 20 21:26:50.195748 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=13 channel=NotATemplateName
+Oct 20 21:27:02.228935 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=14 channel=NotATemplateName
+Oct 20 21:27:14.279526 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=15 channel=NotATemplateName
+Oct 20 21:27:26.317497 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=16 channel=NotATemplateName
+Oct 20 21:27:38.338446 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=17 channel=NotATemplateName
+Oct 20 21:27:50.383744 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=18 channel=NotATemplateName
+Oct 20 21:28:02.402868 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=19 channel=NotATemplateName
+Oct 20 21:28:14.427801 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_CUE_POSTED id=20 channel=NotATemplateName
+Oct 20 21:28:26.444434 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:28.450401 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1483576.846873,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:28.450462 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:30.452560 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1485579.254999,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:30.452585 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:32.458271 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1487584.879416,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:32.458319 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:34.461678 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1489588.379084,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:34.461728 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:36.466748 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1491593.339335,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:36.466822 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:38.470178 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1493596.840711,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:38.470222 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:40.478192 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1495604.62942,"_type":"error","_bubbles":false,"_cancelabl
+Oct 20 21:28:40.478260 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:42.483918 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1497610.455838,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:42.483957 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:44.485891 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1499612.622714,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:44.485923 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:46.489983 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1501616.645965,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:46.490182 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:48.493696 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1503619.957424,"_type":"error","_bubbles":false,"_cancelab
+Oct 20 21:28:48.493755 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
+Oct 20 21:28:50.498948 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_ERROR {"_defaultPrevented":false,"_timeStamp":1505625.6208,"_type":"error","_bubbles":false,"_cancelable
+Oct 20 21:28:50.498980 local0.info com.clutch.tv[11247]: 547541217568 INFO com.amazon.keplerscript: [KeplerScript-JavaScript] CLUTCH_WS_CLOSE
