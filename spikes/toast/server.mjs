@@ -3,8 +3,9 @@
 // offset estimated from ping/pong midpoints taken just before each cue.
 //
 //   node server.mjs [--n 20] [--interval 12000] [--channel template|bad] [--out latencies.csv] [--start-delay 1500]
+import http from 'node:http';
 import {WebSocketServer} from 'ws';
-import {appendFileSync, writeFileSync} from 'node:fs';
+import {appendFileSync, writeFileSync, readFileSync} from 'node:fs';
 
 const arg = (k, d) => {
   const i = process.argv.indexOf(`--${k}`);
@@ -26,7 +27,22 @@ const toastHex = raw => {
     return '';
   }
 };
-const wss = new WebSocketServer({port: PORT, host: '0.0.0.0'});
+// The service pairs before it connects, like it does with the real cue server: any pairing gets a token, any hello is accepted.
+const icon = readFileSync(new URL('../../server/assets/clutch-icon.png', import.meta.url));
+const server = http.createServer((req, res) => {
+  if (req.method === 'POST' && req.url === '/api/pair') {
+    res.setHeader('content-type', 'application/json');
+    return res.end(JSON.stringify({token: 'spike'.repeat(9), householdId: 'spike', expiresAt: Date.now() + 864e5}));
+  }
+  if (req.url === '/assets/clutch-icon.png') {
+    res.setHeader('content-type', 'image/png');
+    return res.end(icon);
+  }
+  res.statusCode = 404;
+  res.end('{}');
+});
+const wss = new WebSocketServer({server});
+server.listen(PORT, '0.0.0.0');
 console.log(`cue server on :${PORT}, ${N} cues, channel=${CHANNEL}, out=${OUT}`);
 
 let running = false;
@@ -65,7 +81,7 @@ wss.on('connection', ws => {
       ws.send(JSON.stringify({
         type: 'cue', id,
         title: `Clutch cue ${id}`,
-        body: 'The game is coming down to the wire. Menu to switch.',
+        body: 'The game is coming down to the wire. Menu to open Clutch.',
         ...(CHANNEL === 'bad' ? {channel: 'NotATemplateName'} : {}),
       }));
       const recv = await waitRecv;
