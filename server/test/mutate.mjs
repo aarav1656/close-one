@@ -21,6 +21,8 @@ const mutations = [
   ['lib/hub.mjs', 'team list unchecked', '|| !teams.every(t => TEAM_ABBRS.has(t))', ''],
   ['lib/api.mjs', 'http auth gate off', "if (!rec) throw new HubError(401, 'unauthorized');", ''],
   ['lib/api.mjs', 'socket hello unchecked', "if (!rec) return ws.close(4401, 'unauthorized');", ''],
+  ['lib/api.mjs', 'icon route missing', "route === 'GET /assets/clutch-icon.png'", "route === 'GET /assets/none.png'"],
+  ['lib/teams.mjs', 'nickname lookup off', '?.nick ?? t.short', '?.short ?? t.short'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
 const tests = ['test/model.test.mjs', 'test/hub.test.mjs'];

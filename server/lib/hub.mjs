@@ -7,7 +7,7 @@ import {join} from 'node:path';
 import {Household} from './household.mjs';
 import {Engine} from './engine.mjs';
 import {secsLeft, leverage} from './model.mjs';
-import {TEAM_ABBRS} from './teams.mjs';
+import {TEAM_ABBRS, nick} from './teams.mjs';
 
 export const DAY = 86400e3;
 const sha = t => createHash('sha256').update(t).digest('hex');
@@ -135,8 +135,8 @@ export class Hub {
     const secs = secsLeft(row.p, row.c);
     this.view.set(id, {
       id, at: ms, status, period: row.p, clock: row.c,
-      home: meta.home.short, away: meta.away.short, homeAbbr: meta.home.abbr, awayAbbr: meta.away.abbr,
-      label: `${meta.away.short} at ${meta.home.short}`,
+      home: nick(meta.home), away: nick(meta.away), homeAbbr: meta.home.abbr, awayAbbr: meta.away.abbr,
+      label: `${nick(meta.away)} at ${nick(meta.home)}`,
       pressure: Number(Math.min(1, leverage(row.h - row.a, secs) / 0.6).toFixed(2)),
     });
   }

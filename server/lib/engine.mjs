@@ -1,5 +1,6 @@
 // Feeds game states through the cue decision for one household and keeps the per game arming.
 import {secsLeft, leverage, decide, REARM_FRACTION} from './model.mjs';
+import {nick} from './teams.mjs';
 
 const ordinal = n => ['', '1st', '2nd', '3rd', '4th'][n] ?? `OT${n - 4}`;
 export const periodLabel = p => (p <= 4 ? `${ordinal(p)} quarter` : p === 5 ? 'overtime' : `${p - 4}OT`);
@@ -59,7 +60,7 @@ export class Engine {
         gameId,
         team: team.abbr,
         ms,
-        title: `${meta.away.short} at ${meta.home.short} is coming down to the wire`,
+        title: `${nick(meta.away)} at ${nick(meta.home)} is coming down to the wire`,
         body: `${periodLabel(row.p)}, ${clockLabel(row.c)} left. Press Menu to open Clutch.`,
         lev,
         threshold,

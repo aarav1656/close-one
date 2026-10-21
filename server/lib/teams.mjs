@@ -13,3 +13,6 @@ export const TEAMS = [
   T('TOR', 'Toronto', 'Raptors'), T('UTAH', 'Utah', 'Jazz'), T('WSH', 'Washington', 'Wizards'),
 ];
 export const TEAM_ABBRS = new Set(TEAMS.map(t => t.abbr));
+
+/** The nickname shown on screen ("Knicks"), whatever form the feed used for the team's short name. */
+export const nick = t => TEAMS.find(x => x.abbr === t.abbr)?.nick ?? t.short;

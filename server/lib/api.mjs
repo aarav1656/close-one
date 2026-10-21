@@ -1,8 +1,11 @@
 // HTTP and WebSocket surface of the cue server. Everything except /health and /api/pair needs the
 // device token issued at pairing: as a bearer header over HTTP, as the first `hello` frame over WebSocket.
+import {readFileSync} from 'node:fs';
 import {WebSocketServer} from 'ws';
 import {HubError} from './hub.mjs';
 import {TEAMS} from './teams.mjs';
+
+const icon = readFileSync(new URL('../assets/clutch-icon.png', import.meta.url));
 
 const json = (res, code, obj) => {
   res.statusCode = code;
@@ -40,6 +43,13 @@ export function createApi(hub, {pairsPerMinute = 20, now = Date.now} = {}) {
       const path = req.url.split('?')[0];
       const route = `${req.method} ${path}`;
       if (route === 'GET /health') return json(res, 200, {ok: true});
+      // The toast icon. The system renderer fetches it over http, so it is served without a token.
+      if (route === 'GET /assets/clutch-icon.png') {
+        console.log(`ICON requested by ${req.socket.remoteAddress} ua=${req.headers['user-agent'] ?? ''}`);
+        res.setHeader('content-type', 'image/png');
+        res.setHeader('cache-control', 'public, max-age=86400');
+        return res.end(icon);
+      }
       if (route === 'POST /api/pair') {
         const ip = req.socket.remoteAddress ?? '';
         const recent = (pairs.get(ip) ?? []).filter(t => now() - t < 60e3);

@@ -209,3 +209,27 @@ test('the cue socket needs a valid hello token and only carries its own househol
   wb.close();
   await s.close();
 });
+
+test('on screen names are team nicknames even when the feed sends a full name', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  await s.call('PUT', '/api/follow', {token, body: {teams: ['NY']}});
+  const full = {home: {abbr: 'NY', short: 'New York Knicks'}, away: {abbr: 'CLE', short: 'Cleveland Cavaliers'}};
+  s.hub.show('g9', full, tied, 'live');
+  s.hub.ingest('g9', full, tied, s.clock.t);
+  const st = (await s.call('GET', '/api/state', {token})).json;
+  assert.equal(st.games[0].label, 'Cavaliers at Knicks');
+  assert.equal(st.active.home, 'Knicks');
+  assert.match(s.hub.households.values().next().value.cues.values().next().value.title, /^Cavaliers at Knicks /);
+  await s.close();
+});
+
+test('the toast icon is served without a token as a real PNG', async () => {
+  const s = await boot();
+  const res = await fetch(`${s.base}/assets/clutch-icon.png`);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('content-type'), 'image/png');
+  assert.deepEqual([...new Uint8Array(await res.arrayBuffer()).slice(0, 4)], [0x89, 0x50, 0x4e, 0x47]);
+  assert.equal((await fetch(`${s.base}/assets/other.png`)).status, 401, 'nothing else under /assets is public');
+  await s.close();
+});
