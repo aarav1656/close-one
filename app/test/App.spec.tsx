@@ -11,11 +11,29 @@ jest.mock('@amazon-devices/react-native-async-storage__async-storage', () =>
   require('@amazon-devices/react-native-async-storage__async-storage/jest/async-storage-mock'),
 );
 
+const notOnboarded: api.Settings = {onboarded: false, enabled: true, quiet: null, paused: false, silence: null};
+
 const teams: api.Team[] = [
   {abbr: 'NY', city: 'New York', nick: 'Knicks', name: 'New York Knicks'},
   {abbr: 'SA', city: 'San Antonio', nick: 'Spurs', name: 'San Antonio Spurs'},
   {abbr: 'BOS', city: 'Boston', nick: 'Celtics', name: 'Boston Celtics'},
 ];
+
+const showcase: api.Showcase = {
+  label: 'Bucks at Hawks',
+  date: '20260119',
+  from: 2520,
+  total: 2880,
+  bar: 0.3,
+  ticks: [{t: 2520, label: '4th 6:00'}, {t: 2580, label: '5:00'}, {t: 2640, label: '4:00'}],
+  series: Array.from({length: 96}, (_, i) => (i > 90 ? 0.45 : 0.1)),
+  rule: [
+    {t: 2638, at: '4th 4:02', lev: 0.18, verdict: 'below', why: 'Within 5 points with under 5 minutes left. Clutch waits: only 18 points of win chance at stake, under the bar of 30.'},
+    {t: 2683, at: '4th 3:17', lev: 0.24, verdict: 'below', why: 'Within 5 points with under 5 minutes left. Clutch waits: only 24 points of win chance at stake, under the bar of 30.'},
+  ],
+  clutch: [{t: 2733, at: '4th 2:27', lev: 0.48, why: 'The next possession can move the win chance by 48 points, over the bar of 30. 2 simple alerts had already gone out.'}],
+  summary: 'The simple rule alerts 2 times. Clutch cues once, first at 4th 2:27 with 48 points of win chance on the next possession.',
+};
 
 let mounted: ReactTestRenderer.ReactTestRenderer | undefined;
 const show = async (state: api.ServerState | Error) => {
@@ -44,54 +62,87 @@ describe('Clutch app', () => {
     expect(asText(r)).toContain('4th 3:12');
   });
 
-  it('a household that follows nobody lands on the team picker, not on a game', async () => {
-    const r = await show({...baseState, follow: [], games: [game({followed: false})]});
+  it('a TV that has not opted in lands on setup step 1, not on a game', async () => {
+    const r = await show({...baseState, follow: [], settings: notOnboarded, games: [game({followed: false})]});
+    expect(asText(r)).toContain('STEP 1 OF 3');
     expect(asText(r)).toContain('Pick the teams you follow');
     expect(asText(r)).toContain('Knicks');
     expect(asText(r)).not.toContain('Your teams tonight');
   });
 
-  it('saving the picker sends the chosen abbreviations and returns home', async () => {
-    const save = jest.spyOn(api, 'setFollow').mockResolvedValue(['NY', 'BOS']);
-    const r = await show({...baseState, follow: [], games: []});
+  it('setup: teams, quiet hours, then Turn cues on is the only thing that opts in', async () => {
+    const follow = jest.spyOn(api, 'setFollow').mockResolvedValue(['NY', 'BOS']);
+    const settings = jest.spyOn(api, 'setSettings').mockResolvedValue({...baseState.settings});
+    const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
     await press(r, 'Knicks');
     await press(r, 'Celtics');
-    expect(asText(r)).toContain('Done, following 2');
-    await press(r, 'Done, following 2');
+    await press(r, 'Next, following 2');
     await flush();
-    expect(save).toHaveBeenCalledWith(['NY', 'BOS']);
+    expect(follow).toHaveBeenCalledWith(['NY', 'BOS']);
+    expect(asText(r)).toContain('STEP 2 OF 3');
+    expect(settings).not.toHaveBeenCalled();
+    await press(r, '10 pm to 7 am');
+    await press(r, 'Next');
+    expect(asText(r)).toContain('STEP 3 OF 3');
+    expect(asText(r)).toContain('Until you do, Clutch sends nothing.');
+    expect(asText(r)).toContain('10 pm to 7 am');
+    expect(settings).not.toHaveBeenCalled();
+    await press(r, 'Turn cues on');
+    await flush();
+    expect(settings).toHaveBeenCalledWith({onboarded: true, enabled: true, quiet: {from: 22, to: 7}, offsetMin: -new Date().getTimezoneOffset()});
     expect(asText(r)).toContain('CLUTCH');
-    expect(asText(r)).not.toContain('Done, following');
+  });
+
+  it('backing out of setup leaves cues off and offers setup from Home', async () => {
+    const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
+    await press(r, 'Back');
+    expect(asText(r)).toContain('Set up Clutch');
+    expect(controls(r).preferred).toEqual(['Set up Clutch']);
+  });
+
+  it('setup that cannot reach the server says so and does not leave setup', async () => {
+    jest.spyOn(api, 'setFollow').mockResolvedValue([]);
+    jest.spyOn(api, 'setSettings').mockRejectedValue(new Error('down'));
+    const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
+    await press(r, 'Next');
+    await flush();
+    await press(r, 'Next');
+    await press(r, 'Turn cues on');
+    await flush();
+    expect(asText(r)).toContain('Could not reach the server');
+    expect(asText(r)).toContain('STEP 3 OF 3');
   });
 
   it('tapping a team twice un-picks it', async () => {
     const save = jest.spyOn(api, 'setFollow').mockResolvedValue([]);
-    const r = await show({...baseState, follow: [], games: []});
+    const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
     await press(r, 'Knicks');
     await press(r, 'Knicks');
-    expect(asText(r)).not.toContain('Done, following');
-    await press(r, 'Done');
+    expect(asText(r)).not.toContain('following');
+    await press(r, 'Next');
     expect(save).toHaveBeenCalledWith([]);
   });
 
   it('a picker that cannot save says so and keeps the picks', async () => {
     jest.spyOn(api, 'setFollow').mockRejectedValue(new Error('down'));
-    const r = await show({...baseState, follow: [], games: []});
+    const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
     await press(r, 'Knicks');
-    await press(r, 'Done, following 1');
+    await press(r, 'Next, following 1');
     await flush();
     expect(asText(r)).toContain('Could not save');
-    expect(asText(r)).toContain('Done, following 1');
+    expect(asText(r)).toContain('Next, following 1');
   });
 
   it('puts the card in front for an active cue, sends accept on Watch, and never shows a score', async () => {
-    const card = {id: 7, gameId: 'g1', title: 't', body: '4th quarter, 3:12 left. Press Menu to open Clutch.', home: 'Spurs', away: 'Thunder', why: 'Close, and the next possession can move the win chance by 38 points.'};
+    const card = {id: 7, gameId: 'g1', title: 't', body: 'Coming down to the wire. 4th quarter, 3:12 left. Menu opens Clutch.', when: '4th quarter, 3:12 left', home: 'Spurs', away: 'Thunder', why: 'Close, and the next possession can move the win chance by 38 points.'};
     const fb = jest.spyOn(api, 'sendFeedback').mockResolvedValue();
     const r = await show({...baseState, active: card});
     expect(asText(r)).toContain('COMING DOWN TO THE WIRE');
     expect(asText(r)).toContain('Thunder');
     expect(asText(r)).not.toMatch(/\d+-\d+/);
-    expect(asText(r)).not.toContain('Press Menu');
+    expect(asText(r)).toContain('4th quarter, 3:12 left');
+    expect(asText(r)).not.toContain('Menu opens Clutch');
+    expect(asText(r)).toContain('Pressure on the next possession');
     await press(r, 'Watch');
     expect(fb).toHaveBeenCalledWith(7, 'accept');
     expect(asText(r)).toContain('Pressure on the next possession');
@@ -219,24 +270,52 @@ describe('Clutch app', () => {
   describe('D-pad focus: every screen has controls and exactly one first-focus target', () => {
     it('home with games', async () => {
       const c = controls(await show(baseState));
-      expect(c.labels).toEqual(expect.arrayContaining(['Thunder at Spurs', 'Teams (1)', 'Server']));
+      expect(c.labels).toEqual(expect.arrayContaining(['Thunder at Spurs', 'Teams (1)', 'Pause tonight', 'Two rules', 'Settings']));
       expect(c.preferred).toEqual(['Thunder at Spurs']);
     });
-    it('home with no teams chosen yet, picker dismissed', async () => {
-      const r = await show({...baseState, follow: [], games: []});
-      await press(r, 'Back');
-      const c = controls(r);
-      expect(c.labels).toEqual(expect.arrayContaining(['Choose teams', 'Teams', 'Server']));
+    it('home for an opted-in household that follows nobody', async () => {
+      const c = controls(await show({...baseState, follow: [], games: []}));
+      expect(c.labels).toEqual(expect.arrayContaining(['Choose teams', 'Teams', 'Two rules', 'Settings']));
       expect(c.preferred).toEqual(['Choose teams']);
     });
     it('home when nothing is live', async () => {
       const c = controls(await show({...baseState, games: []}));
       expect(c.preferred).toEqual(['Teams (1)']);
     });
-    it('picker', async () => {
-      const c = controls(await show({...baseState, follow: [], games: []}));
-      expect(c.labels).toEqual(expect.arrayContaining(['Knicks', 'Spurs', 'Celtics', 'Done', 'Back']));
+    it('picker (setup step 1)', async () => {
+      const c = controls(await show({...baseState, follow: [], settings: notOnboarded, games: []}));
+      expect(c.labels).toEqual(expect.arrayContaining(['Knicks', 'Spurs', 'Celtics', 'Next', 'Back']));
       expect(c.preferred).toEqual(['Knicks']);
+    });
+    it('quiet hours (setup step 2) and Turn cues on (step 3)', async () => {
+      jest.spyOn(api, 'setFollow').mockResolvedValue([]);
+      const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
+      await press(r, 'Next');
+      await flush();
+      const q = controls(r);
+      expect(q.labels).toEqual(['No quiet hours', '10 pm to 7 am', '11 pm to 6 am', 'Midnight to 8 am', 'Next', 'Back']);
+      expect(q.preferred).toEqual(['No quiet hours']);
+      await press(r, 'Next');
+      const t = controls(r);
+      expect(t.labels).toEqual(['Turn cues on', 'Back']);
+      expect(t.preferred).toEqual(['Turn cues on']);
+    });
+    it('settings', async () => {
+      const r = await show(baseState);
+      await press(r, 'Settings');
+      const c = controls(r);
+      expect(c.labels).toEqual(['Turn cues off', 'Pause tonight', 'None', 'Teams (1)', 'Server address', 'Back']);
+      expect(c.preferred).toEqual(['Turn cues off']);
+    });
+    it('same game, two rules', async () => {
+      jest.spyOn(api, 'getShowcase').mockResolvedValue(showcase);
+      const r = await show(baseState);
+      await press(r, 'Two rules');
+      await flush();
+      const c = controls(r);
+      expect(c.labels).toEqual(expect.arrayContaining(['Back']));
+      expect(c.labels.length).toBe(1 + showcase.rule.length + showcase.clutch.length);
+      expect(c.preferred).toEqual(['Back']);
     });
     it('cue card', async () => {
       const c = controls(await show({...baseState, active: {id: 3, gameId: 'g1', title: 't', body: 'x'}}));
@@ -245,7 +324,8 @@ describe('Clutch app', () => {
     });
     it('server settings', async () => {
       const r = await show(baseState);
-      await press(r, 'Server');
+      await press(r, 'Settings');
+      await press(r, 'Server address');
       const c = controls(r);
       expect(c.labels).toEqual(['Save and reconnect', 'Use default', 'Back']);
       expect(c.preferred).toEqual(['Save and reconnect']);
@@ -260,7 +340,8 @@ describe('Clutch app', () => {
 
   it('server settings rejects an address that is not http(s) host and saves a good one', async () => {
     const r = await show(baseState);
-    await press(r, 'Server');
+    await press(r, 'Settings');
+    await press(r, 'Server address');
     const input = () => r.root.findByProps({accessibilityLabel: 'Server address'});
     await ReactTestRenderer.act(async () => input().props.onChangeText('not a url'));
     await press(r, 'Save and reconnect');
@@ -270,5 +351,117 @@ describe('Clutch app', () => {
     await flush();
     expect(asText(r)).toContain('CLUTCH');
     expect(asText(r)).not.toContain('Where Clutch listens');
+  });
+
+  describe('household switches', () => {
+    it('cues off: the home says so and offers the way back', async () => {
+      const r = await show({...baseState, settings: {...baseState.settings, enabled: false, silence: 'off'}});
+      expect(asText(r)).toContain('Cues are off');
+      expect(asText(r)).toContain('No toast from any game');
+      expect(asText(r)).not.toContain('Your bar tonight');
+    });
+
+    it('paused tonight: the footer button becomes Resume and one press calls the pause endpoint', async () => {
+      const pause = jest.spyOn(api, 'setPause').mockResolvedValue({...baseState.settings, paused: true, silence: 'paused'});
+      const r = await show(baseState);
+      await press(r, 'Pause tonight');
+      expect(pause).toHaveBeenCalledWith(true);
+      const r2 = await show({...baseState, settings: {...baseState.settings, paused: true, silence: 'paused'}});
+      expect(asText(r2)).toContain('Paused for tonight');
+      expect(controls(r2).labels).toContain('Resume tonight');
+      await press(r2, 'Resume tonight');
+      expect(pause).toHaveBeenLastCalledWith(false);
+    });
+
+    it('settings with cues off offers Turn cues on and says why nothing arrives', async () => {
+      const set = jest.spyOn(api, 'setSettings').mockResolvedValue(baseState.settings);
+      const r = await show({...baseState, settings: {...baseState.settings, enabled: false, silence: 'off'}});
+      await press(r, 'Settings');
+      expect(asText(r)).toContain('Off. No toast, from any game, until you turn it back on.');
+      await press(r, 'Turn cues on');
+      expect(set).toHaveBeenCalledWith({enabled: true});
+    });
+
+    it('quiet hours: the home names the hours', async () => {
+      const r = await show({...baseState, settings: {...baseState.settings, quiet: {from: 22, to: 7}, silence: 'quiet_hours'}});
+      expect(asText(r)).toContain('Quiet hours, 10 pm to 7 am');
+      expect(asText(r)).toContain('No cue during 10 pm to 7 am');
+    });
+
+    it('settings: the off switch, quiet hours and pause each call the server', async () => {
+      const set = jest.spyOn(api, 'setSettings').mockResolvedValue(baseState.settings);
+      const pause = jest.spyOn(api, 'setPause').mockResolvedValue(baseState.settings);
+      const r = await show(baseState);
+      await press(r, 'Settings');
+      await press(r, 'Turn cues off');
+      expect(set).toHaveBeenCalledWith({enabled: false});
+      await press(r, 'Pause tonight');
+      expect(pause).toHaveBeenCalledWith(true);
+      await press(r, 'None');
+      await press(r, 'Midnight to 8 am');
+      await press(r, 'Save');
+      await flush();
+      expect(set).toHaveBeenLastCalledWith({quiet: {from: 0, to: 8}, offsetMin: -new Date().getTimezoneOffset()});
+      expect(asText(r)).toContain('Your cues, your rules');
+    });
+  });
+
+  describe('after the game', () => {
+    it('a finished game says what Clutch did: cues, answers, bar movement', async () => {
+      const summaries = [{gameId: 'g9', label: 'Thunder at Spurs', cues: 2, accepted: 1, dismissed: 1, waiting: 0, from: 0.3, to: 0.32}];
+      const r = await show({...baseState, summaries});
+      expect(asText(r)).toContain('Final, Thunder at Spurs');
+      expect(asText(r)).toContain('Clutch sent 2 cues: 1 watched, 1 not now. Bar 30 to 32.');
+    });
+
+    it('a quiet game is reported as Clutch staying quiet', async () => {
+      const r = await show({...baseState, summaries: [{gameId: 'g9', label: 'Thunder at Spurs', cues: 0, accepted: 0, dismissed: 0, waiting: 0, from: 0.3, to: 0.3}]});
+      expect(asText(r)).toContain('Clutch stayed quiet. Nothing crossed your bar.');
+    });
+  });
+
+  describe('same game, two rules', () => {
+    it('lists every alert of both rules in game order with a short reason, and the full reason follows focus', async () => {
+      jest.spyOn(api, 'getShowcase').mockResolvedValue(showcase);
+      const r = await show(baseState);
+      await press(r, 'Two rules');
+      await flush();
+      const t = asText(r);
+      expect(t).toContain('Bucks at Hawks');
+      expect(t).toContain(showcase.summary);
+      const at = t.split('\n').filter(l => /^4th \d:\d\d$/.test(l) && l !== '4th 6:00'); // the first axis tick is not an alert
+      expect(at).toEqual(['4th 4:02', '4th 3:17', '4th 2:27']);
+      expect(t).toContain('Simple rule alerts. Clutch waits: 18 points at stake, bar 30.');
+      expect(t).toContain('Clutch cues: 48 points on the next possession, over the bar of 30.');
+      expect(t).toContain('Move through the alerts');
+      await ReactTestRenderer.act(async () => {
+        r.root.findByProps({accessibilityLabel: '4th 4:02 Simple rule alerts. Clutch waits: 18 points at stake, bar 30.'}).props.onFocus();
+      });
+      expect(asText(r)).toContain(showcase.rule[0].why);
+    });
+
+    it('draws a column per slice of the game, bright only where the pressure is over the bar', async () => {
+      jest.spyOn(api, 'getShowcase').mockResolvedValue(showcase);
+      const r = await show(baseState);
+      await press(r, 'Two rules');
+      await flush();
+      const cols = r.root.findAll(n => typeof n.type === 'string' && Array.isArray(n.props.style) && n.props.style.length === 3 && n.props.style[0]?.position === 'absolute' && n.props.style[0]?.bottom === 0);
+      expect(cols.length).toBe(96);
+      expect(cols.filter(n => n.props.style[2].backgroundColor === color.amber).length).toBe(5);
+      const heights = cols.map(n => n.props.style[1].height);
+      expect(Math.max(...heights.slice(91))).toBeGreaterThan(Math.max(...heights.slice(0, 91)));
+    });
+
+    it('a replay that cannot load offers Try again', async () => {
+      const get = jest.spyOn(api, 'getShowcase').mockRejectedValueOnce(new Error('down')).mockResolvedValue(showcase);
+      const r = await show(baseState);
+      await press(r, 'Two rules');
+      await flush();
+      expect(asText(r)).toContain('The replay did not load');
+      await press(r, 'Try again');
+      await flush();
+      expect(get).toHaveBeenCalledTimes(2);
+      expect(asText(r)).toContain('Bucks at Hawks');
+    });
   });
 });

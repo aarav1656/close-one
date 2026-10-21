@@ -128,7 +128,8 @@ export class Hub {
 
   #settingsOf(rec) {
     const s = rec.household.settings;
-    return {onboarded: s.onboarded, enabled: s.enabled, quiet: s.quiet, paused: rec.household.isPaused(this.now())};
+    const silence = rec.household.gate(this.now());
+    return {onboarded: s.onboarded, enabled: s.enabled, quiet: s.quiet, paused: rec.household.isPaused(this.now()), silence: silence === 'not_onboarded' ? null : silence};
   }
 
   /** Demo day: a household back to a clean night, opted in and following these teams. */
@@ -213,6 +214,7 @@ export class Hub {
       active: act && now - act.ms < this.cueTtlMs ? this.#card(act) : null,
       tonight: {cues: h.cuesTonight(now), cap: h.o.cap, quiet: h.isQuiet(now)},
       follow: [...rec.follow],
+      followNames: [...rec.follow].map(abbr => nick({abbr, short: abbr})),
       settings: this.#settingsOf(rec),
       summaries: this.#summaries(rec, now),
       games,
@@ -253,6 +255,6 @@ export class Hub {
 
   #card(cue) {
     const v = this.view.get(cue.gameId);
-    return {id: cue.id, gameId: cue.gameId, title: cue.title, body: cue.body, why: cue.why, home: v?.home, away: v?.away, ...(cue.score ? {score: cue.score} : {})};
+    return {id: cue.id, gameId: cue.gameId, title: cue.title, body: cue.body, when: cue.when, why: cue.why, home: v?.home, away: v?.away, ...(cue.score ? {score: cue.score} : {})};
   }
 }

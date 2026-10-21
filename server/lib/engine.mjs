@@ -60,8 +60,10 @@ export class Engine {
         gameId,
         team: team.abbr,
         ms,
-        title: `${nick(meta.away)} at ${nick(meta.home)} is coming down to the wire`,
-        body: `${periodLabel(row.p)}, ${clockLabel(row.c)} left. Press Menu to open Clutch.`,
+        // Short on purpose: the toast is a title line and two lines of body, with no icon beside it.
+        title: `${nick(meta.away)} at ${nick(meta.home)}`,
+        when: `${periodLabel(row.p)}, ${clockLabel(row.c)} left`,
+        body: `Coming down to the wire. ${periodLabel(row.p)}, ${clockLabel(row.c)} left. Menu opens Clutch.`,
         lev,
         threshold,
         period: row.p,

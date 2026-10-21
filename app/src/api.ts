@@ -16,6 +16,8 @@ export interface Card {
   gameId: string;
   title: string;
   body: string;
+  /** Quarter and clock, for example 4th quarter, 2:27 left. */
+  when?: string;
   why?: string;
   home?: string;
   away?: string;
@@ -38,10 +40,56 @@ export interface CueMark {
   period: number;
   clock: number;
 }
+export interface Quiet {
+  from: number;
+  to: number;
+}
+/** The household's own switches. silence names why no cue will be sent right now, or null. */
+export interface Settings {
+  onboarded: boolean;
+  enabled: boolean;
+  quiet: Quiet | null;
+  paused: boolean;
+  silence: 'off' | 'paused' | 'quiet_hours' | null;
+}
+export interface Summary {
+  gameId: string;
+  label: string;
+  cues: number;
+  accepted: number;
+  dismissed: number;
+  waiting: number;
+  from: number;
+  to: number;
+}
+export interface Alert {
+  t: number;
+  at: string;
+  lev: number;
+  why: string;
+  verdict?: string;
+}
+/** One finished game through both rules, from the server's showcase replay. */
+export interface Showcase {
+  label: string;
+  date: string;
+  /** Seconds since tip-off where the chart starts, and where the game ends. */
+  from: number;
+  total: number;
+  bar: number;
+  series: number[];
+  ticks: {t: number; label: string}[];
+  rule: Alert[];
+  clutch: Alert[];
+  summary: string;
+}
 export interface ServerState {
   active: Card | null;
   tonight: {cues: number; cap: number; quiet: boolean};
   follow: string[];
+  followNames: string[];
+  settings: Settings;
+  summaries: Summary[];
   games: GameView[];
   upcoming: {label: string; startsAt: string}[];
   feed: {ok: boolean; ageMs: number | null};
@@ -116,6 +164,19 @@ async function call<T>(method: string, path: string, body?: object): Promise<T> 
   }
   return (await res.json()) as T;
 }
+
+export async function setSettings(patch: Partial<Pick<Settings, 'onboarded' | 'enabled' | 'quiet'>> & {offsetMin?: number}): Promise<Settings> {
+  return (await call<{settings: Settings}>('PUT', '/api/settings', patch)).settings;
+}
+
+export async function setPause(paused: boolean): Promise<Settings> {
+  return (await call<{settings: Settings}>('POST', '/api/pause', {paused})).settings;
+}
+
+export const getShowcase = (): Promise<Showcase> => call('GET', '/api/showcase');
+
+/** Minutes the TV's clock is ahead of UTC, so quiet hours mean the household's own hours. */
+export const localOffsetMin = (): number => -new Date().getTimezoneOffset();
 
 export const getState = (): Promise<ServerState> => call('GET', '/api/state');
 

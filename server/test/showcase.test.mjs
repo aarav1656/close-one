@@ -19,11 +19,15 @@ test('every alert Clutch holds back sits under the bar, the one it sends sits ov
   assert.ok(c.clutch[0].lev >= c.bar);
 });
 
-test('the timeline is 96 slices of the game and peaks where Clutch spoke', () => {
+test('the timeline is 96 slices of the last stretch and the alerts sit apart in it', () => {
   assert.equal(c.series.length, 96);
   assert.equal(c.total, 2880);
-  assert.ok(Math.max(...c.series.slice(0, 80)) < c.bar, 'nothing over the bar until the finish');
-  assert.ok(Math.max(...c.series.slice(88)) >= c.bar);
+  assert.equal(c.from, 2520, 'starts at the minute before the first alert: 6:00 left');
+  assert.deepEqual(c.ticks.map(t => t.label), ['4th 6:00', '5:00', '4:00', '3:00', '2:00', '1:00', '0:00']);
+  assert.ok(Math.max(...c.series.slice(0, 20)) < c.bar, 'calm early in the window');
+  assert.ok(Math.max(...c.series.slice(80)) >= c.bar, 'over the bar at the finish');
+  const gaps = [...c.rule, ...c.clutch].map(a => a.t).sort((a, b) => a - b).map((t, i, a) => (i ? t - a[i - 1] : 99));
+  assert.ok(Math.min(...gaps) >= 20, 'no two alerts closer than 20 s');
   assert.equal(elapsed(4, 147), 2880 - 147);
   assert.equal(elapsed(5, 300), 2880);
   assert.equal(elapsed(6, 0), 2880 + 600);

@@ -6,12 +6,16 @@ import {color, type, space} from '../theme';
 import {base} from './styles';
 
 interface Props {
+  /** Shown above the title during onboarding, for example STEP 1 OF 3. */
+  step?: string;
+  /** Label of the save button when teams are picked. */
+  doneLabel?: string;
   initial: string[];
   onSave: (abbrs: string[]) => Promise<void>;
   onBack: () => void;
 }
 
-export const TeamPicker = ({initial, onSave, onBack}: Props) => {
+export const TeamPicker = ({step, doneLabel, initial, onSave, onBack}: Props) => {
   const [teams, setTeams] = useState<Team[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [tries, setTries] = useState(0);
@@ -45,7 +49,7 @@ export const TeamPicker = ({initial, onSave, onBack}: Props) => {
 
   return (
     <View style={[base.screen, styles.screen]}>
-      <Text style={base.kicker}>YOUR TEAMS</Text>
+      <Text style={base.kicker}>{step ?? 'YOUR TEAMS'}</Text>
       <Text style={styles.title}>Pick the teams you follow</Text>
       <Text style={base.detail}>Clutch interrupts only for games with these teams in them.</Text>
       {failed ? (
@@ -66,6 +70,7 @@ export const TeamPicker = ({initial, onSave, onBack}: Props) => {
               <View key={t.abbr} style={styles.cell}>
                 <Button
                   compact
+                  fill
                   preferred={i === 0}
                   selected={picked.includes(t.abbr)}
                   label={t.nick}
@@ -77,7 +82,7 @@ export const TeamPicker = ({initial, onSave, onBack}: Props) => {
           <View style={styles.footer}>
             <Button
               primary
-              label={saving ? 'Saving' : picked.length > 0 ? `Done, following ${picked.length}` : 'Done'}
+              label={saving ? 'Saving' : picked.length > 0 ? `${doneLabel ?? 'Done'}, following ${picked.length}` : doneLabel ?? 'Done'}
               onPress={saving ? () => undefined : save}
             />
             <View style={base.gap} />
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
   screen: {paddingTop: space(40)},
   title: {color: color.text, fontSize: type.title, fontWeight: '800', marginTop: space(6)},
   grid: {flexDirection: 'row', flexWrap: 'wrap', marginTop: space(24)},
-  cell: {marginRight: space(16), marginBottom: space(12)},
+  cell: {width: space(262), marginRight: space(14), marginBottom: space(12)},
   footer: {flexDirection: 'row', alignItems: 'center', marginTop: space(16)},
   fail: {marginTop: space(24)},
   err: {color: color.stop, fontSize: type.label, marginLeft: space(40), flex: 1},

@@ -23,17 +23,11 @@ export function loadShowcase(file) {
 }
 
 /**
- * @returns {{label, date, total, bar, series, rule, clutch, summary}} series is leverage per slice of the game (the peak in each slice),
+ * @returns {{label, date, from, total, bar, series, ticks, rule, clutch, summary}} series is the pressure per slice of the window from `from` to the buzzer (the peak in each slice),
  * rule and clutch are the alerts each rule would have sent, each with the plain reason.
  */
 export function compare(game, {base = DEFAULTS.base, cap = DEFAULTS.cap} = {}) {
   const rs = game.plays.map(r => ({...r, m: r.h - r.a, secs: secsLeft(r.p, r.c), t: elapsed(r.p, r.c), lev: leverage(r.h - r.a, secsLeft(r.p, r.c))}));
-  const total = Math.max(...rs.map(r => r.t));
-  const series = Array.from({length: BUCKETS}, () => 0);
-  for (const r of rs) {
-    const i = Math.min(BUCKETS - 1, Math.floor((r.t / total) * BUCKETS));
-    series[i] = Math.max(series[i], r.lev);
-  }
 
   const rule = [];
   const clutch = [];
@@ -63,14 +57,33 @@ export function compare(game, {base = DEFAULTS.base, cap = DEFAULTS.cap} = {}) {
       });
     } else if (!armed && r.lev < base * REARM_FRACTION) armed = true;
   }
+  // The chart shows the stretch where anything happens: from a minute-aligned point a minute before the first
+  // alert of either rule to the final buzzer, so alerts seconds apart stay apart on screen.
+  const total = Math.max(...rs.map(r => r.t));
+  const alerts = [...rule, ...clutch].map(a => a.t);
+  const from = alerts.length ? Math.max(0, Math.floor((Math.min(...alerts) - 60) / 60) * 60) : Math.max(0, total - 360);
+  const series = Array.from({length: BUCKETS}, () => 0);
+  for (const r of rs) {
+    if (r.t < from) continue;
+    const i = Math.min(BUCKETS - 1, Math.floor(((r.t - from) / (total - from)) * BUCKETS));
+    series[i] = Math.max(series[i], r.lev);
+  }
+  const ticks = [];
+  for (let t = from; t <= total; t += 60) {
+    const p = t < REG_SECS ? Math.floor(t / 720) + 1 : 5 + Math.floor((t - REG_SECS) / OT_SECS);
+    const c = t < REG_SECS ? 720 - (t % 720) : OT_SECS - ((t - REG_SECS) % OT_SECS);
+    ticks.push({t, label: t === from ? `${ord(p)} ${clock(c === 720 ? 0 : c)}` : clock(c % (p <= 4 ? 720 : OT_SECS))});
+  }
   const away = nick(game.away);
   const home = nick(game.home);
   return {
     label: `${away} at ${home}`,
     date: game.date,
+    from,
     total,
     bar: base,
     series,
+    ticks,
     rule,
     clutch,
     summary: `The simple rule alerts ${rule.length} time${rule.length === 1 ? '' : 's'}. ${

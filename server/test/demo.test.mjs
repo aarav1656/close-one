@@ -25,7 +25,7 @@ test('demo prepare puts a paired household on a clean opted-in night, demo cue s
   assert.equal(cue.body.cues, 1);
   assert.equal(cue.body.at, '4th 2:27');
   assert.equal(sent.length, 1);
-  assert.match(sent[0][1].title, /^Bucks at Hawks /);
+  assert.match(sent[0][1].title, /^Bucks at Hawks$/);
 });
 
 test('a second prepare resets the night so the demo can run again', () => {
@@ -51,4 +51,18 @@ test('demo routes answer only on the loopback address and never touch other path
   }
   assert.equal(call(demo, '/api/state', '10.0.2.15').handled, false, 'the normal API is left alone');
   assert.equal(call(demo, '/demo/prepare', '127.0.0.1', 'GET').status, 405);
+});
+
+test('demo final ends the game and the household gets its summary', () => {
+  const hub = new Hub({});
+  const rec = hub.households.get(hub.pair('tv').householdId);
+  const demo = createDemo(hub, game);
+  call(demo, '/demo/prepare');
+  call(demo, '/demo/cue');
+  assert.deepEqual(hub.state(rec).summaries, [], 'nothing while the game is live');
+  call(demo, '/demo/final');
+  const [sum] = hub.state(rec).summaries;
+  assert.equal(sum.label, 'Bucks at Hawks');
+  assert.equal(sum.cues, 1);
+  assert.equal(sum.waiting, 1);
 });

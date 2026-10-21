@@ -8,11 +8,13 @@ interface Props {
   primary?: boolean;
   preferred?: boolean;
   compact?: boolean;
+  /** Fill the width of the parent instead of sizing to the label. */
+  fill?: boolean;
   selected?: boolean;
   testID?: string;
 }
 
-export const Button = ({label, onPress, primary, preferred, compact, selected, testID}: Props) => {
+export const Button = ({label, onPress, primary, preferred, compact, fill, selected, testID}: Props) => {
   const [focused, setFocused] = useState(false);
   return (
     <TouchableOpacity
@@ -31,10 +33,12 @@ export const Button = ({label, onPress, primary, preferred, compact, selected, t
       style={[
         styles.base,
         compact && styles.compact,
-        primary || selected ? styles.primary : styles.secondary,
+        fill && styles.fill,
+        primary ? styles.primary : styles.secondary,
+        selected && styles.selected,
         focused && styles.focused,
       ]}>
-      <Text style={[styles.text, compact && styles.compactText, (primary || selected) && styles.primaryText]}>{label}</Text>
+      <Text style={[styles.text, compact && styles.compactText, primary && styles.primaryText]}>{label}</Text>
     </TouchableOpacity>
   );
 };
@@ -50,7 +54,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   compact: {minWidth: space(230), paddingVertical: space(18), paddingHorizontal: space(20)},
+  fill: {minWidth: 0, width: '100%', paddingHorizontal: space(8)},
   primary: {backgroundColor: color.amber},
+  selected: {backgroundColor: color.amberDim, borderColor: color.amber},
   secondary: {backgroundColor: color.panel},
   focused: {borderColor: color.text, transform: [{scale: 1.06}]},
   text: {color: color.text, fontSize: type.body, fontWeight: '700'},

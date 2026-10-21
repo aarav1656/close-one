@@ -79,7 +79,10 @@ test('a new household follows nothing and gets no cue; picking the team turns cu
   assert.equal(s.sent.length, 1);
   const st = (await s.call('GET', '/api/state', {token})).json;
   assert.deepEqual(st.follow, ['NY']);
+  assert.deepEqual(st.followNames, ['Knicks']);
   assert.equal(st.active.id, s.sent[0][1]);
+  assert.equal(st.active.when, '4th quarter, 2:00 left');
+  assert.match(st.active.body, /^Coming down to the wire\. 4th quarter, 2:00 left\. Menu opens Clutch\.$/);
   assert.match(st.active.why, /next possession can move the win chance by \d+ points/);
   assert.doesNotMatch(st.active.why, /\d+-\d+/, 'the reason never carries a score');
   await s.close();
@@ -226,7 +229,7 @@ test('on screen names are team nicknames even when the feed sends a full name', 
   const st = (await s.call('GET', '/api/state', {token})).json;
   assert.equal(st.games[0].label, 'Cavaliers at Knicks');
   assert.equal(st.active.home, 'Knicks');
-  assert.match(s.hub.households.values().next().value.cues.values().next().value.title, /^Cavaliers at Knicks /);
+  assert.match(s.hub.households.values().next().value.cues.values().next().value.title, /^Cavaliers at Knicks$/);
   await s.close();
 });
 
@@ -258,7 +261,7 @@ test('nothing is sent before the TV opts in, even for a followed team; opting in
   assert.equal((await s.call('GET', '/api/state', {token})).json.settings.onboarded, false);
   s.hub.ingest('g1', game, tied, s.clock.t);
   assert.equal(s.sent.length, 0, 'followed, tight game, not opted in');
-  assert.deepEqual((await s.call('PUT', '/api/settings', {token, body: {onboarded: true}})).json.settings, {onboarded: true, enabled: true, quiet: null, paused: false});
+  assert.deepEqual((await s.call('PUT', '/api/settings', {token, body: {onboarded: true}})).json.settings, {onboarded: true, enabled: true, quiet: null, paused: false, silence: null});
   s.hub.ingest('g1', game, tied, s.clock.t + 1000);
   assert.equal(s.sent.length, 1);
   await s.close();
@@ -277,11 +280,13 @@ test('the off switch, one press pause for tonight, and quiet hours each stop cue
 
   await s.call('PUT', '/api/settings', {token, body: {enabled: false}});
   assert.equal(tryCue('off'), 0, 'switched off');
+  assert.equal((await st()).silence, 'off');
   await s.call('PUT', '/api/settings', {token, body: {enabled: true}});
 
   assert.equal((await s.call('POST', '/api/pause', {token, body: {paused: true}})).json.settings.paused, true);
   assert.equal(tryCue('paused'), 0, 'paused for tonight');
   assert.equal((await st()).paused, true);
+  assert.equal((await st()).silence, 'paused');
   s.clock.t += 20 * 3600e3; // the next night
   assert.equal((await st()).paused, false, 'the pause ends with the night');
   assert.equal(tryCue('nextnight'), 1, 'and cues flow again the next night');
@@ -291,6 +296,7 @@ test('the off switch, one press pause for tonight, and quiet hours each stop cue
   // 01:00 UTC. A TV at UTC-5 is at 20:00: quiet from 19 to 23 covers it, quiet from 22 to 7 does not.
   await s.call('PUT', '/api/settings', {token, body: {offsetMin: -300, quiet: {from: 19, to: 23}}});
   assert.equal(tryCue('quiet1'), 0, 'inside quiet hours');
+  assert.equal((await st()).silence, 'quiet_hours');
   await s.call('PUT', '/api/settings', {token, body: {quiet: {from: 22, to: 7}}});
   assert.equal(tryCue('quiet2'), 1, 'outside quiet hours, the cue goes out');
   assert.deepEqual((await st()).quiet, {from: 22, to: 7});

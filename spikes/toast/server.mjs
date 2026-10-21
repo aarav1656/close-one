@@ -81,7 +81,7 @@ wss.on('connection', ws => {
       ws.send(JSON.stringify({
         type: 'cue', id,
         title: `Clutch cue ${id}`,
-        body: 'The game is coming down to the wire. Menu to open Clutch.',
+        body: 'Coming down to the wire. Menu opens Clutch.',
         ...(CHANNEL === 'bad' ? {channel: 'NotATemplateName'} : {}),
       }));
       const recv = await waitRecv;

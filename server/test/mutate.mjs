@@ -40,6 +40,7 @@ const mutations = [
   ['lib/demo.mjs', 'demo routes open to the network', "if (!LOCAL.has(req.socket.remoteAddress ?? '')) return reply(res, 403, {ok: false, error: 'local_only'}), true;", ''],
   ['lib/hub.mjs', 'demo prepare keeps the night count', 'offset: {}, cues: {}, dismissals: []', 'offset: {}, dismissals: []'],
   ['lib/hub.mjs', 'demo prepare leaves the household out of the opt-in', 'onboarded: true, enabled: true, quiet: null', 'onboarded: false, enabled: true, quiet: null'],
+  ['lib/showcase.mjs', 'chart starts at tip-off', 'Math.floor((Math.min(...alerts) - 60) / 60) * 60', '0'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
 const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs'];
