@@ -131,6 +131,18 @@ export class Hub {
     return {onboarded: s.onboarded, enabled: s.enabled, quiet: s.quiet, paused: rec.household.isPaused(this.now())};
   }
 
+  /** Demo day: a household back to a clean night, opted in and following these teams. */
+  demoReset(rec, teams) {
+    const h = rec.household;
+    Object.assign(h, {offset: {}, cues: {}, dismissals: [], quietNight: null, events: [], log: []});
+    h.settings = {...h.settings, onboarded: true, enabled: true, quiet: null, pausedNight: null};
+    rec.cues.clear();
+    rec.active = null;
+    rec.engine.games.clear();
+    this.setFollow(rec, teams);
+    h.save();
+  }
+
   #cued(rec, cue) {
     rec.cues.set(cue.id, {...cue, answered: false});
     rec.active = cue;

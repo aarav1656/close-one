@@ -1,0 +1,42 @@
+// Demo day. With `node live.mjs --demo` the server also answers two loopback-only calls that drive a finished game
+// through the real pipeline: /demo/prepare puts every paired household on a clean night following the game's teams,
+// /demo/cue plays the game up to the moment Clutch speaks, so a recording reaches a real toast on a real
+// authenticated socket without waiting for a live game.
+import {secsLeft} from './model.mjs';
+import {compare, elapsed} from './showcase.mjs';
+
+const LOCAL = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+
+export function createDemo(hub, game) {
+  const meta = {home: {...game.home, short: game.home.short}, away: {...game.away, short: game.away.short}};
+  const teams = [game.home.abbr, game.away.abbr];
+  const cueAt = compare(game).clutch[0];
+  if (!cueAt) throw new Error('the demo game has no Clutch cue');
+  const row = game.plays.find(r => elapsed(r.p, r.c) === cueAt.t);
+  const reply = (res, code, obj) => {
+    res.statusCode = code;
+    res.setHeader('content-type', 'application/json');
+    res.end(JSON.stringify(obj));
+  };
+
+  /** Returns true when the request was a demo route (handled), false to let the normal API see it. */
+  return (req, res) => {
+    if (!req.url.startsWith('/demo/')) return false;
+    if (!LOCAL.has(req.socket.remoteAddress ?? '')) return reply(res, 403, {ok: false, error: 'local_only'}), true;
+    if (req.method !== 'POST') return reply(res, 405, {ok: false}), true;
+    if (req.url === '/demo/prepare') {
+      for (const rec of hub.households.values()) hub.demoReset(rec, teams);
+      return reply(res, 200, {ok: true, households: hub.households.size, follow: teams}), true;
+    }
+    if (req.url === '/demo/cue') {
+      const now = hub.now();
+      hub.show(game.id, meta, row, 'live', now);
+      hub.feedOk(now);
+      const before = [...hub.households.values()].reduce((n, rec) => n + rec.cues.size, 0);
+      hub.ingest(game.id, meta, row, now);
+      const after = [...hub.households.values()].reduce((n, rec) => n + rec.cues.size, 0);
+      return reply(res, 200, {ok: true, cues: after - before, at: cueAt.at, secsLeft: secsLeft(row.p, row.c)}), true;
+    }
+    return reply(res, 404, {ok: false}), true;
+  };
+}

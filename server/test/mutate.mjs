@@ -37,9 +37,12 @@ const mutations = [
   ['lib/hub.mjs', 'settings accept any offset', 'if (!Number.isInteger(v) || Math.abs(v) > 840) throw bad();', ''],
   ['lib/hub.mjs', 'settings accept any key', '} else throw bad();', '}'],
   ['lib/hub.mjs', 'summary mixes games', 'tonight.filter(r => r.gameId === g.id)', 'tonight'],
+  ['lib/demo.mjs', 'demo routes open to the network', "if (!LOCAL.has(req.socket.remoteAddress ?? '')) return reply(res, 403, {ok: false, error: 'local_only'}), true;", ''],
+  ['lib/hub.mjs', 'demo prepare keeps the night count', 'offset: {}, cues: {}, dismissals: []', 'offset: {}, dismissals: []'],
+  ['lib/hub.mjs', 'demo prepare leaves the household out of the opt-in', 'onboarded: true, enabled: true, quiet: null', 'onboarded: false, enabled: true, quiet: null'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
-const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs'];
+const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs'];
 // A mutant that hangs a test counts as caught: the suite has a per test timeout and the run a hard one.
 const run = () => spawnSync('node', ['--test', '--test-timeout=120000', ...tests], {cwd: root, encoding: 'utf8', timeout: 150000}).status;
 const originals = new Map();

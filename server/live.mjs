@@ -2,13 +2,15 @@
 // household's cue decision, pushes cues over a WebSocket to that household's Vega service and serves its
 // game card to the app. Every household follows only the teams its TV picked.
 //
-//   node live.mjs [--port 38787] [--data ./data] [--scores] [--replay <cached game id> --speed 30]
+//   node live.mjs [--port 38787] [--data ./data] [--scores] [--replay <cached game id> --speed 30] [--demo]
 import http from 'node:http';
 import {readFileSync, appendFileSync, mkdirSync, existsSync, writeFileSync, renameSync} from 'node:fs';
 import {scoreboard, summary, timeline, teams} from './lib/espn.mjs';
 import {nightOf} from './lib/household.mjs';
 import {Hub} from './lib/hub.mjs';
 import {createApi, attachWs} from './lib/api.mjs';
+import {createDemo} from './lib/demo.mjs';
+import {loadShowcase} from './lib/showcase.mjs';
 
 const arg = (k, d) => {
   const i = process.argv.indexOf(`--${k}`);
@@ -57,7 +59,9 @@ const hub = new Hub({
   },
 });
 
-const server = http.createServer(createApi(hub));
+const api = createApi(hub);
+const demo = flag('demo') ? createDemo(hub, loadShowcase(new URL('./showcase/401809247.json', import.meta.url))) : () => false;
+const server = http.createServer((req, res) => (demo(req, res) ? undefined : api(req, res)));
 attachWs(server, hub, {
   onMessage: (rec, m, ws) => {
     if (m.type === 'hello') console.log(`device connected to ${rec.id} (${rec.devices.size})`);
