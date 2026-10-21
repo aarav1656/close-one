@@ -30,7 +30,7 @@ npm run typecheck && npm test
 npm run build:debug   # build/aarch64-debug/clutch-vega_aarch64.vpkg
 ```
 
-`metro.config.js` sets `resolver.useWatchman: false`. Watchman's `watch-project` blocks on `~/Desktop` (macOS folder privacy), which hangs the build.
+Projects under `~/Desktop`, `~/Documents` or `~/Downloads` need a macOS Files and Folders (or Full Disk Access) grant for `watchman`, otherwise the build prints `Waiting for Watchman` forever. Without the grant, set `resolver: {useWatchman: false}` in `app/metro.config.js` and run jest with `--no-watchman`.
 
 ## Run on the Vega Virtual Device
 

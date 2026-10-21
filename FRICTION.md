@@ -4,17 +4,18 @@ Product feedback for the Vega SDK, Vega Virtual Device (VVD), the Amazon Devices
 
 Severity: High = blocked the work or cost more than 30 minutes, Medium = needed a workaround, Low = papercut.
 
-## FL-001 Watchman prerequisite makes every Metro build hang with no error
+## FL-001 Metro and jest hang forever on a macOS-protected folder, with no error
 
 - Task: build the app with `npm run build:debug` after installing the prerequisites from the install page (`brew install binutils coreutils gawk findutils grep jq lz4 gnu-sed watchman`).
 - Steps: `npm install` in a fresh project under `~/Desktop`, then `npm run build:debug` (`react-native build-kepler`).
 - Expected: a .vpkg in `build/`, as the same command produced for a project under `/tmp`.
 - Actual: the build never finishes and prints one line every 20 seconds for as long as it is left running:
   `Waiting for Watchman \`watch-project\` (870s)...`
-  `watchman watch-project .` run by hand in the same directory returns no output and no error. The same call on `/tmp/samples` returns at once. `~/Desktop` is a macOS privacy-protected folder and the Homebrew watchman daemon has no grant for it, so the call blocks silently. `npx jest` in the same project hangs the same way (240 s with no output) and returns in 1 s with `--no-watchman`.
-- Severity: High. Over 20 minutes lost across two hangs before the cause was found, and nothing in the output names Watchman as blocked rather than slow.
-- Workaround: `resolver: {useWatchman: false}` in `metro.config.js` and `--no-watchman` for jest (both are in this repo).
-- Suggestion: have the Vega build time out `watch-project` after 30 s with a message that names the macOS folder-privacy cause, and note on the install page that projects under Desktop, Documents and Downloads need the watchman grant or `useWatchman: false`.
+  `watchman watch-project .` run by hand in the same directory returns no output and no error, and the same call on `/tmp/samples` returns at once. `npx jest` in the project hangs the same way (240 s with no output) and returns in 1 s with `--no-watchman`.
+- Root cause: `~/Desktop` is a macOS privacy-protected folder. The Homebrew `watchman` daemon had no Files and Folders grant for it, so `watch-project` blocked on the permission prompt that nothing displayed. After the grant (System Settings, Privacy & Security, Files and Folders or Full Disk Access, for watchman) `watch-project` returns at once (`"watcher": "fsevents"`), `npm run build:debug` finishes with Watchman on, jest passes without `--no-watchman`, and `react-native start` serves Metro.
+- Severity: High. Over 20 minutes lost across two hangs before the cause was found, and nothing in the output names the permission, or Watchman, as blocked rather than slow.
+- Workaround until the grant exists: `resolver: {useWatchman: false}` in `metro.config.js` and `--no-watchman` for jest.
+- Suggestion: have the Vega build time out `watch-project` after 30 s with a message that names the macOS folder-privacy cause, and add the Files and Folders grant for watchman to the install page prerequisites for projects under Desktop, Documents and Downloads.
 
 ## FL-002 `ignore-scripts=true` silently skips the vega-video-sample Shaka build
 

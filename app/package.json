@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "react-native start",
-    "test": "jest --ci --watchAll=false --no-watchman",
+    "test": "jest --ci --watchAll=false",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build:debug": "react-native build-vega --build-type Debug",
     "build:release": "react-native build-vega --build-type Release",
