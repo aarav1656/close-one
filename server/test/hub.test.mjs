@@ -39,7 +39,7 @@ test('every endpoint but pairing and health refuses a missing, garbage or expire
   const s = await boot();
   const {token} = await s.pair();
   assert.equal((await s.call('GET', '/health')).status, 200);
-  for (const [m, p] of [['GET', '/api/state'], ['GET', '/api/teams'], ['PUT', '/api/follow'], ['POST', '/api/feedback']]) {
+  for (const [m, p] of [['GET', '/api/state'], ['GET', '/api/teams'], ['GET', '/api/showcase'], ['PUT', '/api/follow'], ['POST', '/api/feedback']]) {
     assert.equal((await s.call(m, p)).status, 401, `${m} ${p} without a token`);
     assert.equal((await s.call(m, p, {token: 'x'.repeat(43)})).status, 401, `${m} ${p} with a made up token`);
   }
@@ -231,5 +231,16 @@ test('the toast icon is served without a token as a real PNG', async () => {
   assert.equal(res.headers.get('content-type'), 'image/png');
   assert.deepEqual([...new Uint8Array(await res.arrayBuffer()).slice(0, 4)], [0x89, 0x50, 0x4e, 0x47]);
   assert.equal((await fetch(`${s.base}/assets/other.png`)).status, 401, 'nothing else under /assets is public');
+  await s.close();
+});
+
+test('the showcase replay is served to a paired household', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  const res = await s.call('GET', '/api/showcase', {token});
+  assert.equal(res.status, 200);
+  assert.equal(res.json.label, 'Bucks at Hawks');
+  assert.equal(res.json.rule.length, 3);
+  assert.equal(res.json.clutch.length, 1);
   await s.close();
 });

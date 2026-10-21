@@ -25,9 +25,12 @@ const mutations = [
   ['lib/teams.mjs', 'nickname lookup off', '?.nick ?? t.short', '?.short ?? t.short'],
   ['lib/replay.mjs', 'late-decided margin widened', 'if (Math.abs(tail[0].m) <= 3) return true;', 'if (Math.abs(tail[0].m) <= 2) return true;'],
   ['lib/season.mjs', 'a cue in the first quarter counts as catching the finish', 'c.p >= 4 && c.secs >= 30', 'c.p >= 1 && c.secs >= 30'],
+  ['lib/showcase.mjs', 'simple rule alerts on every play', 'if (holds && !inside) {', 'if (holds) {'],
+  ['lib/showcase.mjs', 'overtime clock ignored', 'REG_SECS + (p - 5) * OT_SECS', 'REG_SECS'],
+  ['lib/showcase.mjs', 'quiet reason hides the bar', 'under the bar of ${points(base)}.`', 'at stake.`'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
-const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs'];
+const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs'];
 // A mutant that hangs a test counts as caught: the suite has a per test timeout and the run a hard one.
 const run = () => spawnSync('node', ['--test', '--test-timeout=120000', ...tests], {cwd: root, encoding: 'utf8', timeout: 150000}).status;
 const originals = new Map();

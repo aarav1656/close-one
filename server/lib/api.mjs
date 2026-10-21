@@ -4,8 +4,11 @@ import {readFileSync} from 'node:fs';
 import {WebSocketServer} from 'ws';
 import {HubError} from './hub.mjs';
 import {TEAMS} from './teams.mjs';
+import {compare, loadShowcase} from './showcase.mjs';
 
 const icon = readFileSync(new URL('../assets/clutch-icon.png', import.meta.url));
+
+const showcase = compare(loadShowcase(new URL('../showcase/401809247.json', import.meta.url)));
 
 const json = (res, code, obj) => {
   res.statusCode = code;
@@ -61,6 +64,7 @@ export function createApi(hub, {pairsPerMinute = 20, now = Date.now} = {}) {
       const rec = hub.auth(bearer(req));
       if (!rec) throw new HubError(401, 'unauthorized');
       if (route === 'GET /api/teams') return json(res, 200, {teams: TEAMS});
+      if (route === 'GET /api/showcase') return json(res, 200, showcase);
       if (route === 'GET /api/state') return json(res, 200, hub.state(rec));
       if (route === 'PUT /api/follow') {
         const {teams} = await readJson(req);
