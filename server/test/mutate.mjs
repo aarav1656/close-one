@@ -42,6 +42,10 @@ const mutations = [
   ['lib/hub.mjs', 'demo prepare leaves the household out of the opt-in', 'onboarded: true, enabled: true, quiet: null', 'onboarded: false, enabled: true, quiet: null'],
   ['lib/showcase.mjs', 'chart starts at tip-off', 'Math.floor((Math.min(...alerts) - 60) / 60) * 60', '0'],
   ['lib/hub.mjs', 'posted ack never recorded', 'if (c && !c.postedAt) c.postedAt = this.now();', ''],
+  ['lib/budget.mjs', 'tuning games leak into the report', "export const TUNE_BEFORE = '20260115';", "export const TUNE_BEFORE = '20260215';"],
+  ['lib/budget.mjs', 'equal budget lets the rule spend more', 'if (s.cuesPerGame > clutchTune.cuesPerGame + 1e-9) continue;', ''],
+  ['lib/budget.mjs', 'caught ignores the time left', 'cues.some(c => c.p >= 4 && c.secs >= lead)', 'cues.some(c => c.p >= 4 && c.secs >= 30)'],
+  ['lib/budget.mjs', 'bar chosen for the most cues', 'ok.sort((a, b) => a.cuesPerGame - b.cuesPerGame);', 'ok.sort((a, b) => b.cuesPerGame - a.cuesPerGame);'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
 const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs'];

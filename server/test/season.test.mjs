@@ -4,6 +4,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {loadGames, runEval} from '../lib/season.mjs';
+import {split, prepare, tuneBase, TUNE_BEFORE} from '../lib/budget.mjs';
+import {DEFAULTS} from '../lib/household.mjs';
 
 const games = loadGames();
 const out = runEval(games);
@@ -50,4 +52,55 @@ test('every figure in the committed results.json is what the cache recomputes', 
 
 test('an empty cache is an error, not a pass', () => {
   assert.throws(() => loadGames('/nonexistent-clutch-cache/'));
+});
+
+const hb = out.heldBack;
+
+test('the split is by date: 603 games before 2026-01-15 to tune on, 632 from that date on to report on, none in both', () => {
+  const {tune, report} = split(games);
+  assert.equal(TUNE_BEFORE, '20260115');
+  assert.equal(tune.length, 603);
+  assert.equal(report.length, 632);
+  assert.ok(tune.every(g => g.date < '20260115') && report.every(g => g.date >= '20260115'));
+  assert.equal(new Set([...tune, ...report].map(g => g.id)).size, 1235);
+});
+
+test('the bar chosen on the early games alone is the shipped default of 30', () => {
+  const {tune} = split(games);
+  const chosen = tuneBase(prepare(tune));
+  assert.equal(chosen.base, DEFAULTS.base);
+  assert.equal(chosen.tuning.caught, 153);
+  assert.equal(chosen.rule.caught, 153);
+  assert.equal(hb.tunedBase, 0.3);
+});
+
+test('games from Jan 15 on: Clutch 0.48 cues per game against 0.71, silent in 431 of 632, 100 of 104 late-decided caught against 102', () => {
+  assert.equal(hb.report.clutch.games, 632);
+  assert.equal(hb.report.clutch.late, 104);
+  assert.equal(hb.report.clutch.caught, 100);
+  assert.equal(hb.report.baseline.caught, 102);
+  assert.equal(hb.report.clutch.cuesPerGame.toFixed(2), '0.48');
+  assert.equal(hb.report.baseline.cuesPerGame.toFixed(2), '0.71');
+  assert.equal(hb.report.clutch.silentGames, 431);
+  assert.ok(hb.report.clutch.cuesPerGame < 0.7 * hb.report.baseline.cuesPerGame, 'at least 30% fewer cues');
+});
+
+test('equal budget with two minutes to switch: Clutch catches 97 of 104, the best simple rule tuned on the early games 93', () => {
+  const at = lead => hb.equalBudget.find(e => e.lead === lead);
+  assert.deepEqual(at(120).rule, {margin: 3, minutes: 3});
+  assert.equal(at(120).report.clutch.caught, 97);
+  assert.equal(at(120).report.simple.caught, 93);
+  assert.equal(at(150).report.clutch.caught, 88);
+  assert.equal(at(150).report.simple.caught, 80);
+  assert.equal(at(120).tune.clutch.caught, 138);
+  assert.equal(at(120).tune.simple.caught, 132);
+  for (const e of hb.equalBudget) {
+    assert.ok(e.tune.simple.cuesPerGame <= e.tune.clutch.cuesPerGame + 1e-9, `lead ${e.lead}: the rule never spends more than Clutch on the games it was tuned on`);
+  }
+});
+
+test('the whole lead-time table is in the results, losses included', () => {
+  assert.deepEqual(hb.equalBudget.map(e => e.lead), [30, 60, 90, 120, 150]);
+  const short = hb.equalBudget.find(e => e.lead === 30);
+  assert.ok(short.report.simple.caught >= short.report.clutch.caught, 'with only 30 s left a last-minute rule keeps up: printed, not hidden');
 });

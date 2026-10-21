@@ -3,6 +3,7 @@
 import {readdirSync, readFileSync} from 'node:fs';
 import {rows, modelCues, ruleCues, decidedLate, finalMargin} from './replay.mjs';
 import {homeWinProb} from './model.mjs';
+import {split, prepare, tuneBase, equalBudget, modelOf, score, LEADS, TUNE_BEFORE} from './budget.mjs';
 
 export const GAMES_DIR = new URL('../data/games/', import.meta.url).pathname;
 export const SEASON_SPLIT = '20260601';
@@ -95,5 +96,30 @@ export function runEval(all) {
   const out = {generatedFrom: all.length, espnWpMeanAbsError: n ? ae / n : null, espnWpRows: n, sets: {}, sensitivity: {}};
   for (const [name, g] of Object.entries(sets)) if (g.length) out.sets[name] = evaluate(g, 0.3);
   for (const b of BASES) out.sensitivity[b] = evaluate(all, b);
+  out.heldBack = heldBack(all);
   return out;
+}
+
+/**
+ * The result a reader should trust most: the bar is chosen on games before TUNE_BEFORE, and Clutch, the
+ * within-5-in-5 baseline and the equal-budget rule are all scored on the games from that date on.
+ */
+function heldBack(all) {
+  const {tune, report} = split(all);
+  const T = prepare(tune);
+  const R = prepare(report);
+  const tuned = tuneBase(T);
+  const clutchReport = score(R, g => modelOf(g, tuned.base), 30);
+  return {
+    from: TUNE_BEFORE,
+    tuneGames: tune.length,
+    reportGames: report.length,
+    tunedBase: tuned.base,
+    tuning: {clutch: tuned.tuning, baseline: tuned.rule},
+    report: {
+      clutch: {...clutchReport, silentGames: R.filter(g => modelOf(g, tuned.base).length === 0).length},
+      baseline: score(R, g => g.rule, 30),
+    },
+    equalBudget: LEADS.map(lead => equalBudget(T, R, lead)),
+  };
 }

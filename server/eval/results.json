@@ -203,5 +203,277 @@
       "blowoutRuleCues": 0,
       "maxModelCuesInAGame": 2
     }
+  },
+  "heldBack": {
+    "from": "20260115",
+    "tuneGames": 603,
+    "reportGames": 632,
+    "tunedBase": 0.3,
+    "tuning": {
+      "clutch": {
+        "base": 0.3,
+        "games": 603,
+        "late": 153,
+        "caught": 153,
+        "recall": 1,
+        "cuesPerGame": 0.6351575456053068
+      },
+      "baseline": {
+        "games": 603,
+        "late": 153,
+        "caught": 153,
+        "recall": 1,
+        "cuesPerGame": 0.9104477611940298
+      }
+    },
+    "report": {
+      "clutch": {
+        "games": 632,
+        "late": 104,
+        "caught": 100,
+        "recall": 0.9615384615384616,
+        "cuesPerGame": 0.4825949367088608,
+        "silentGames": 431
+      },
+      "baseline": {
+        "games": 632,
+        "late": 104,
+        "caught": 102,
+        "recall": 0.9807692307692307,
+        "cuesPerGame": 0.7072784810126582
+      }
+    },
+    "equalBudget": [
+      {
+        "lead": 30,
+        "rule": {
+          "margin": 5,
+          "minutes": 1
+        },
+        "tune": {
+          "clutch": {
+            "games": 603,
+            "late": 153,
+            "caught": 153,
+            "recall": 1,
+            "cuesPerGame": 0.6351575456053068
+          },
+          "simple": {
+            "games": 603,
+            "late": 153,
+            "caught": 153,
+            "recall": 1,
+            "cuesPerGame": 0.42454394693200664
+          }
+        },
+        "report": {
+          "clutch": {
+            "games": 632,
+            "late": 104,
+            "caught": 100,
+            "recall": 0.9615384615384616,
+            "cuesPerGame": 0.4825949367088608
+          },
+          "simple": {
+            "games": 632,
+            "late": 104,
+            "caught": 102,
+            "recall": 0.9807692307692307,
+            "cuesPerGame": 0.3291139240506329
+          },
+          "baseline": {
+            "games": 632,
+            "late": 104,
+            "caught": 102,
+            "recall": 0.9807692307692307,
+            "cuesPerGame": 0.7072784810126582
+          }
+        }
+      },
+      {
+        "lead": 60,
+        "rule": {
+          "margin": 6,
+          "minutes": 2
+        },
+        "tune": {
+          "clutch": {
+            "games": 603,
+            "late": 153,
+            "caught": 151,
+            "recall": 0.9869281045751634,
+            "cuesPerGame": 0.6351575456053068
+          },
+          "simple": {
+            "games": 603,
+            "late": 153,
+            "caught": 153,
+            "recall": 1,
+            "cuesPerGame": 0.5505804311774462
+          }
+        },
+        "report": {
+          "clutch": {
+            "games": 632,
+            "late": 104,
+            "caught": 100,
+            "recall": 0.9615384615384616,
+            "cuesPerGame": 0.4825949367088608
+          },
+          "simple": {
+            "games": 632,
+            "late": 104,
+            "caught": 102,
+            "recall": 0.9807692307692307,
+            "cuesPerGame": 0.4762658227848101
+          },
+          "baseline": {
+            "games": 632,
+            "late": 104,
+            "caught": 101,
+            "recall": 0.9711538461538461,
+            "cuesPerGame": 0.7072784810126582
+          }
+        }
+      },
+      {
+        "lead": 90,
+        "rule": {
+          "margin": 6,
+          "minutes": 2
+        },
+        "tune": {
+          "clutch": {
+            "games": 603,
+            "late": 153,
+            "caught": 145,
+            "recall": 0.9477124183006536,
+            "cuesPerGame": 0.6351575456053068
+          },
+          "simple": {
+            "games": 603,
+            "late": 153,
+            "caught": 152,
+            "recall": 0.9934640522875817,
+            "cuesPerGame": 0.5505804311774462
+          }
+        },
+        "report": {
+          "clutch": {
+            "games": 632,
+            "late": 104,
+            "caught": 100,
+            "recall": 0.9615384615384616,
+            "cuesPerGame": 0.4825949367088608
+          },
+          "simple": {
+            "games": 632,
+            "late": 104,
+            "caught": 101,
+            "recall": 0.9711538461538461,
+            "cuesPerGame": 0.4762658227848101
+          },
+          "baseline": {
+            "games": 632,
+            "late": 104,
+            "caught": 101,
+            "recall": 0.9711538461538461,
+            "cuesPerGame": 0.7072784810126582
+          }
+        }
+      },
+      {
+        "lead": 120,
+        "rule": {
+          "margin": 3,
+          "minutes": 3
+        },
+        "tune": {
+          "clutch": {
+            "games": 603,
+            "late": 153,
+            "caught": 138,
+            "recall": 0.9019607843137255,
+            "cuesPerGame": 0.6351575456053068
+          },
+          "simple": {
+            "games": 603,
+            "late": 153,
+            "caught": 132,
+            "recall": 0.8627450980392157,
+            "cuesPerGame": 0.6318407960199005
+          }
+        },
+        "report": {
+          "clutch": {
+            "games": 632,
+            "late": 104,
+            "caught": 97,
+            "recall": 0.9326923076923077,
+            "cuesPerGame": 0.4825949367088608
+          },
+          "simple": {
+            "games": 632,
+            "late": 104,
+            "caught": 93,
+            "recall": 0.8942307692307693,
+            "cuesPerGame": 0.4936708860759494
+          },
+          "baseline": {
+            "games": 632,
+            "late": 104,
+            "caught": 100,
+            "recall": 0.9615384615384616,
+            "cuesPerGame": 0.7072784810126582
+          }
+        }
+      },
+      {
+        "lead": 150,
+        "rule": {
+          "margin": 3,
+          "minutes": 3
+        },
+        "tune": {
+          "clutch": {
+            "games": 603,
+            "late": 153,
+            "caught": 130,
+            "recall": 0.8496732026143791,
+            "cuesPerGame": 0.6351575456053068
+          },
+          "simple": {
+            "games": 603,
+            "late": 153,
+            "caught": 115,
+            "recall": 0.7516339869281046,
+            "cuesPerGame": 0.6318407960199005
+          }
+        },
+        "report": {
+          "clutch": {
+            "games": 632,
+            "late": 104,
+            "caught": 88,
+            "recall": 0.8461538461538461,
+            "cuesPerGame": 0.4825949367088608
+          },
+          "simple": {
+            "games": 632,
+            "late": 104,
+            "caught": 80,
+            "recall": 0.7692307692307693,
+            "cuesPerGame": 0.4936708860759494
+          },
+          "baseline": {
+            "games": 632,
+            "late": 104,
+            "caught": 100,
+            "recall": 0.9615384615384616,
+            "cuesPerGame": 0.7072784810126582
+          }
+        }
+      }
+    ]
   }
 }
