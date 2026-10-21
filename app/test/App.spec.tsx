@@ -148,14 +148,29 @@ describe('Clutch app', () => {
     expect(asText(r)).toContain('Pressure on the next possession');
   });
 
-  it('Why now? reveals the leverage reason and Hide reason folds it away', async () => {
+  it('Why this cue? shows pressure against the bar and the cues left tonight, with the reason; Hide reason folds it away', async () => {
     const why = 'Close, and the next possession can move the win chance by 38 points.';
-    const r = await show({...baseState, active: {id: 9, gameId: 'g1', title: 't', body: 'x', home: 'Spurs', away: 'Thunder', why}});
+    const whyData = {lev: 0.38, threshold: 0.3, base: 0.3, cap: 2, cuesLeft: 1};
+    const r = await show({...baseState, active: {id: 9, gameId: 'g1', title: 't', body: 'x', home: 'Spurs', away: 'Thunder', why, whyData}});
     expect(asText(r)).not.toContain(why);
-    await press(r, 'Why now?');
-    expect(asText(r)).toContain(why);
+    expect(asText(r)).not.toContain('Your bar 30');
+    await press(r, 'Why this cue?');
+    const t = asText(r);
+    expect(t).toContain('WHY THIS CUE');
+    expect(t).toContain('Pressure 38');
+    expect(t).toContain('Your bar 30');
+    expect(t).toContain('1 of 2 cues left tonight after this one.');
+    expect(t).toContain(why);
     await press(r, 'Hide reason');
     expect(asText(r)).not.toContain(why);
+  });
+
+  it('the last cue of the night says so', async () => {
+    const r = await show({...baseState, active: {id: 9, gameId: 'g1', title: 't', body: 'x', home: 'Spurs', away: 'Thunder', why: 'w', whyData: {lev: 0.5, threshold: 0.35, base: 0.3, cap: 2, cuesLeft: 0}}});
+    await press(r, 'Why this cue?');
+    expect(asText(r)).toContain('That was the last of 2 cues tonight.');
+    const ticks = r.root.findAll(n => typeof n.type === 'string' && Array.isArray(n.props.style) && n.props.style[0]?.backgroundColor === color.text && n.props.style[0]?.position === 'absolute' && n.props.style[0]?.width === space(7));
+    expect(ticks.map(n => n.props.style[1].left)).toEqual([space((0.35 / 0.6) * 900)]);
   });
 
   it('Not now sends dismiss and returns home', async () => {
@@ -319,7 +334,7 @@ describe('Clutch app', () => {
     });
     it('cue card', async () => {
       const c = controls(await show({...baseState, active: {id: 3, gameId: 'g1', title: 't', body: 'x'}}));
-      expect(c.labels).toEqual(['Watch', 'Not now', 'Why now?']);
+      expect(c.labels).toEqual(['Watch', 'Not now', 'Why this cue?']);
       expect(c.preferred).toEqual(['Watch']);
     });
     it('server settings', async () => {

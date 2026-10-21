@@ -14,7 +14,7 @@ const mutations = [
   ['src/screens/TeamPicker.tsx', 'pick cannot be undone', 'p.includes(abbr) ? p.filter(a => a !== abbr) : [...p, abbr]', '[...p, abbr]'],
   ['src/screens/TeamPicker.tsx', 'save failure hidden', 'setSaveFailed(true);', ''],
   ['src/screens/CueCard.tsx', 'why panel never opens', '{why ? (', '{false ? ('],
-  ['src/screens/CueCard.tsx', 'why button loses its label', "why ? 'Hide reason' : 'Why now?'", "'Why now?'"],
+  ['src/screens/CueCard.tsx', 'why button loses its label', "why ? 'Hide reason' : 'Why this cue?'", "'Why this cue?'"],
   ['src/ui/LearningBar.tsx', 'accepted cue labelled as dismissed', "a === 'accept' ? 'Watched'", "a === 'accept' ? 'Not now'"],
   ['src/ui/LearningBar.tsx', 'bar tick ignores the learned threshold', '<View style={[styles.barTick, {left: space(x(learning.threshold))}]} />', '<View style={[styles.barTick, {left: space(x(learning.base))}]} />'],
   ['src/api.ts', 'concurrent calls pair twice', 'pairing ??= ', 'pairing = '],
@@ -33,6 +33,8 @@ const mutations = [
   ['src/ui/Timeline.tsx', 'columns never bright over the bar', 'lev >= data.bar ? styles.over : styles.under', 'styles.under'],
   ['src/quiet.ts', 'wrong quiet hours preset', '{label: \'10 pm to 7 am\', quiet: {from: 22, to: 7}}', '{label: \'10 pm to 7 am\', quiet: {from: 21, to: 7}}'],
   ['src/screens/Settings.tsx', 'off switch label never flips', "settings.enabled ? 'Turn cues off' : 'Turn cues on'", "'Turn cues off'"],
+  ['src/ui/WhyBar.tsx', 'cues left never shown', "cuesLeft > 0 ? `${cuesLeft} of ${cap} cues left tonight after this one.` : `That was the last of ${cap} cues tonight.`", "''"],
+  ['src/ui/WhyBar.tsx', 'bar shown at the starting value', 'style={[styles.barTick, {left: space(x(threshold))}]}', 'style={[styles.barTick, {left: space(x(0.3))}]}'],
   ['src/headless/CueService.ts', 'hello without token', "send({type: 'hello', token, deviceMs: Date.now()});", "send({type: 'hello', deviceMs: Date.now()});"],
   ['src/headless/CueService.ts', 'no retry after close', 'later();\n  };\n}', '};\n}'],
 ];

@@ -19,6 +19,8 @@ export interface Card {
   /** Quarter and clock, for example 4th quarter, 2:27 left. */
   when?: string;
   why?: string;
+  /** The numbers behind the cue: pressure on the next possession, the household's bar, cues left tonight. */
+  whyData?: {lev: number; threshold: number; base: number; cap: number; cuesLeft: number};
   home?: string;
   away?: string;
   score?: string;

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Button} from '../ui/Button';
 import {Pressure} from '../ui/Pressure';
+import {WhyBar} from '../ui/WhyBar';
 import {Card} from '../api';
 import {color, type, space} from '../theme';
 import {base} from './styles';
@@ -27,11 +28,12 @@ export const CueCard = ({card, pressure, onWatch, onLater}: {card: Card; pressur
         <View style={base.gap} />
         <Button label="Not now" onPress={onLater} />
         <View style={base.gap} />
-        <Button label={why ? 'Hide reason' : 'Why now?'} onPress={() => setWhy(w => !w)} />
+        <Button label={why ? 'Hide reason' : 'Why this cue?'} onPress={() => setWhy(w => !w)} />
       </View>
       {why ? (
-        <View style={styles.why} accessibilityLabel="Why now">
-          <Text style={base.label}>WHY NOW</Text>
+        <View style={styles.why} accessibilityLabel="Why this cue">
+          <Text style={base.label}>WHY THIS CUE</Text>
+          {card.whyData ? <WhyBar {...card.whyData} /> : null}
           <Text style={styles.whyText}>{card.why ?? 'This game crossed your bar.'}</Text>
         </View>
       ) : null}
@@ -42,5 +44,5 @@ export const CueCard = ({card, pressure, onWatch, onLater}: {card: Card; pressur
 const styles = StyleSheet.create({
   meter: {marginTop: space(36)},
   why: {marginTop: space(48), maxWidth: space(1400), backgroundColor: color.panel, padding: space(32), borderRadius: space(12)},
-  whyText: {color: color.text, fontSize: type.body, lineHeight: type.body * 1.35},
+  whyText: {color: color.text, fontSize: type.label, lineHeight: type.label * 1.35, marginTop: space(14)},
 });

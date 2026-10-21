@@ -261,6 +261,6 @@ export class Hub {
 
   #card(cue) {
     const v = this.view.get(cue.gameId);
-    return {id: cue.id, gameId: cue.gameId, title: cue.title, body: cue.body, when: cue.when, why: cue.why, home: v?.home, away: v?.away, ...(cue.score ? {score: cue.score} : {})};
+    return {id: cue.id, gameId: cue.gameId, title: cue.title, body: cue.body, when: cue.when, why: cue.why, whyData: cue.whyData, home: v?.home, away: v?.away, ...(cue.score ? {score: cue.score} : {})};
   }
 }

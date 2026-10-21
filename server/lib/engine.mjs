@@ -69,6 +69,7 @@ export class Engine {
         period: row.p,
         clock: row.c,
         lastPlayTs: row.ts ?? null,
+        whyData: {lev, threshold, base: this.h.o.base, cap: this.h.o.cap, cuesLeft: this.h.o.cap - this.h.cuesTonight(ms) - 1},
         why: whyNow({period: row.p, clock: row.c, lev, threshold, base: this.h.o.base, cuesLeft: this.h.o.cap - this.h.cuesTonight(ms) - 1}),
         ...(this.scores ? {score: `${row.a}-${row.h}`} : {}),
       };
