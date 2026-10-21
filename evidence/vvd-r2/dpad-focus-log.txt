@@ -1,0 +1,32 @@
+VVD (Vega SDK 0.24), keys sent with scripts/dpad.sh (inputd-cli button_press). Focus events are the app's CLUTCH_FOCUS log lines.
+
+Team picker: KEY_RIGHT KEY_RIGHT KEY_DOWN x5 KEY_RIGHT KEY_LEFT KEY_LEFT KEY_UP
+CLUTCH_FOCUS Celtics
+CLUTCH_FOCUS Nets
+CLUTCH_FOCUS Pistons
+CLUTCH_FOCUS Grizzlies
+CLUTCH_FOCUS Thunder
+CLUTCH_FOCUS Spurs
+CLUTCH_FOCUS Back
+CLUTCH_FOCUS Raptors
+CLUTCH_FOCUS Spurs
+CLUTCH_FOCUS Kings
+CLUTCH_FOCUS Knicks
+
+Pick Knicks, reach Done, save (server registry then holds follow ["NY"]): KEY_ENTER KEY_DOWN KEY_DOWN KEY_ENTER
+CLUTCH_FOCUS Kings
+CLUTCH_FOCUS Done, following 1
+CLUTCH_FOCUS Teams (1)
+
+Cue card: KEY_RIGHT KEY_RIGHT KEY_ENTER
+CLUTCH_FOCUS Watch
+CLUTCH_FOCUS Not now
+CLUTCH_FOCUS Why now?
+
+Server settings: KEY_DOWN KEY_RIGHT KEY_ENTER, then KEY_UP KEY_ENTER
+CLUTCH_FOCUS Teams (1)
+CLUTCH_FOCUS Server
+CLUTCH_FOCUS Save and reconnect
+CLUTCH_FOCUS Server address
+
+Late Watch after the 30 s timeout dismissal: server answered 409, the app logged CLUTCH_FEEDBACK_FAILED Error: POST /api/feedback 409
