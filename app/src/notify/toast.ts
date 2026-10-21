@@ -15,6 +15,9 @@ import {
 } from '@amazon-devices/react-native-kepler/Libraries/Components/ToastKepler/NotificationManagerUtils';
 import {APP_URI} from '../config';
 
+/** The icon the Clutch server hosts. The renderer is another process: it draws http(s) icons and leaves a package path or data URI blank (measured on the VVD). */
+export const iconUrl = (serverUrl: string): string => `${serverUrl}/assets/clutch-icon.png`;
+
 export const MENU_TOAST = 'MenuToastRenderTemplate';
 export const TOAST_SECONDS = 8;
 const NORMAL = 'NORMAL' as Importance;
@@ -22,12 +25,13 @@ const NORMAL = 'NORMAL' as Importance;
 export function cueToast(
   title: string,
   description: string,
+  iconUri: string,
   channelName: string = MENU_TOAST,
 ): NotificationContent {
   return {
     mTitle: title,
     mDescription: description,
-    mIconUri: 'https://www.amazon.com/favicon.ico',
+    mIconUri: iconUri,
     mTimeout: TOAST_SECONDS,
     mLaunchTargets: [new AppLaunchTarget(APP_URI, 'Open Clutch', 'not_used')],
     mChannel: {

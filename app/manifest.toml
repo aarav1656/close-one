@@ -52,6 +52,10 @@ id = "/com.amazon.kepler.headless_task_manager_1@IHeadlessTaskManager_2"
 [[needs.module]]
 id = "/com.amazon.kepler.keplerscript_4@IKeplerScript_0"
 
+# Device token and server address, shared by the app and the cue service.
+[[needs.module]]
+id = "/com.amazon.kepler.async_storage__async_storage_2@IAsyncStorage__AsyncStorage_1"
+
 [offers]
 [[offers.service]]
 id = "com.clutch.tv.cue.service"

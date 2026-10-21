@@ -9,6 +9,8 @@ export const color = {
   amber: '#FFB400',
   amberDim: '#5A4300',
   line: '#26334F',
+  go: '#4FD1A5',
+  stop: '#FF7A6B',
 };
 
 // 10-foot type: nothing under 34 px at 1080p.
