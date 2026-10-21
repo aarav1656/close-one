@@ -46,6 +46,6 @@ export function timeline(sum) {
 export function teams(sum) {
   const comp = sum.header.competitions[0];
   const side = k => comp.competitors.find(c => c.homeAway === k);
-  const pick = c => ({id: c.team.id, name: c.team.displayName, short: c.team.shortDisplayName ?? c.team.displayName, abbr: c.team.abbreviation});
+  const pick = c => ({id: c.team.id, name: c.team.displayName, short: c.team.name ?? c.team.displayName, abbr: c.team.abbreviation});
   return {home: pick(side('home')), away: pick(side('away')), status: comp.status.type};
 }

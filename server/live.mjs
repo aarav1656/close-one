@@ -20,6 +20,7 @@ const followArg = arg('follow', 'all');
 const follow = followArg === 'all' ? 'all' : new Set(followArg.split(','));
 const REPLAY = arg('replay');
 const SPEED = Number(arg('speed', 30));
+const SKIP = Number(arg('skip', 0)); // replay from this fraction of the game
 const POLL_MS = Number(arg('poll', 10000));
 const logs = new URL('./logs/', import.meta.url).pathname;
 mkdirSync(logs, {recursive: true});
@@ -143,14 +144,16 @@ async function finalRow(id) {
 if (REPLAY) {
   const g = JSON.parse(readFileSync(new URL(`./data/games/${REPLAY}.json`, import.meta.url), 'utf8'));
   const t0 = Date.now();
-  const gameStart = g.plays[0].ts ?? 0;
-  let i = 0;
+  let i = Math.floor(g.plays.length * SKIP);
+  const gameStart = g.plays[i].ts ?? 0;
+  let seen = -1;
   const tick = () => {
     const wallSoFar = (Date.now() - t0) * SPEED;
     while (i < g.plays.length - 1 && (g.plays[i + 1].ts ?? 0) - gameStart <= wallSoFar) i++;
     const row = g.plays[i];
     show(g.id, g, row, i >= g.plays.length - 1 ? 'final' : 'live');
-    engine.ingest(g.id, g, row, Date.now());
+    if (i !== seen) engine.ingest(g.id, g, row, Date.now());
+    seen = i;
     if (i < g.plays.length - 1) setTimeout(tick, 1000);
   };
   tick();
@@ -171,8 +174,9 @@ if (REPLAY) {
         const meta = teams(s);
         show(e.id, meta, row, 'live');
         const ms = Date.now();
-        if (lastTs.get(e.id) === row.ts) continue; // nothing new since the last poll
-        lastTs.set(e.id, row.ts);
+        const key = `${row.ts}|${row.p}|${row.c}|${row.h}|${row.a}`;
+        if (lastTs.get(e.id) === key) continue; // nothing new since the last poll
+        lastTs.set(e.id, key);
         engine.ingest(e.id, meta, {...row}, ms);
       }
     } catch (err) {

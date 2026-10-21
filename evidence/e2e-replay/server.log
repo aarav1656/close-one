@@ -1,0 +1,4 @@
+clutch server :38787 follow=all cap=2 base=0.3 replay=401809250x12
+device connected (1)
+CUE 1 Boston Celtics at Detroit Pistons is coming down to the wire | 4th quarter, 4:30 left. Press Menu to switch. (lev 0.37 >= 0.30, devices 1)
+FEEDBACK cue 1 accept (app) threshold now 0.270
