@@ -18,13 +18,14 @@ export class Household {
     this.dismissals = []; // ms
     this.quietNight = null;
     this.events = []; // {ms, cueId, team, hour, action}
+    this.log = []; // one row per cue sent: {cueId, ms, team, lev, threshold, period, clock, action, after}
     if (file && existsSync(file)) Object.assign(this, JSON.parse(readFileSync(file, 'utf8')));
   }
   save() {
     if (!this.file) return;
     mkdirSync(dirname(this.file), {recursive: true});
-    const {offset, cues, dismissals, quietNight, events} = this;
-    writeFileSync(this.file, JSON.stringify({offset, cues, dismissals, quietNight, events}));
+    const {offset, cues, dismissals, quietNight, events, log} = this;
+    writeFileSync(this.file, JSON.stringify({offset, cues, dismissals, quietNight, events, log: log.slice(-200)}));
   }
   threshold(team, ms) {
     const off = this.offset[`${team}:${hourOf(ms)}`] ?? 0;
@@ -36,10 +37,17 @@ export class Household {
   isQuiet(ms) {
     return this.quietNight === nightOf(ms);
   }
-  recordCue(ms) {
+  /** Counts a cue against tonight's cap. `info` ({cueId, team, lev, threshold, period, clock}) adds it to the visible log. */
+  recordCue(ms, info) {
     const n = nightOf(ms);
     this.cues[n] = (this.cues[n] ?? 0) + 1;
+    if (info) this.log.push({...info, ms, action: null, after: null});
     this.save();
+  }
+  /** Tonight's cues with how each was answered (action null while it is still waiting). */
+  tonight(ms) {
+    const n = nightOf(ms);
+    return this.log.filter(r => nightOf(r.ms) === n);
   }
   /** Accept lowers that team and hour's threshold, dismiss raises it; three dismissals in an hour silence the night. */
   feedback({cueId, team, ms, action}) {
@@ -48,6 +56,11 @@ export class Household {
     const next = (this.offset[key] ?? 0) + step;
     this.offset[key] = Math.min(this.o.max - this.o.base, Math.max(this.o.min - this.o.base, next));
     this.events.push({ms, cueId, team, hour: hourOf(ms), action});
+    const row = this.log.find(r => r.cueId === cueId);
+    if (row) {
+      row.action = action;
+      row.after = this.threshold(team, ms);
+    }
     if (action === 'dismiss') {
       this.dismissals = this.dismissals.filter(t => ms - t <= this.o.quietWindowMs);
       this.dismissals.push(ms);
