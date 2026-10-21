@@ -154,7 +154,7 @@ Severity: High = blocked the work or cost more than 30 minutes, Medium = needed 
 - Expected: one context document in that directory, per the README step "Create the appropriate context file".
 - Actual: `CLAUDE.md` (13.7 KB) in the directory, and 21 skill folders (`amazon-devices-*`, `vega-multi-tv-migration`) created under `~/.claude/skills`, user-global, shared by every project. The command ends with `Review skills before use; they run with full agent permissions.` There is no flag to skip the skills (`--skip-context-document` and `--skip-mcp-config` do not cover them). The generated `CLAUDE.md` tells the agent to run a six-step session setup silently and call MCP tools, which is dead weight when the MCP server is not configured.
 - Severity: Medium. A project-scoped command changed user-global agent configuration.
-- Workaround: this repo keeps the generated file as `docs/amazon-devices-buildertools-context.md` instead of an auto-loaded `CLAUDE.md`; the 21 skills were read (documentation only, no commands) and left in place.
+- Workaround: this repo keeps the generated file as `.amazon-devices/context.md` instead of an auto-loaded `CLAUDE.md`; the 21 skills were read (documentation only, no commands) and left in place.
 - Suggestion: a `--skip-skills` flag, a `--skills-dir`, and a printed list of the paths that will be written before they are.
 
 ## FL-016 Installer edits five shell rc files
