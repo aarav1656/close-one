@@ -23,11 +23,13 @@ const mutations = [
   ['lib/api.mjs', 'socket hello unchecked', "if (!rec) return ws.close(4401, 'unauthorized');", ''],
   ['lib/api.mjs', 'icon route missing', "route === 'GET /assets/clutch-icon.png'", "route === 'GET /assets/none.png'"],
   ['lib/teams.mjs', 'nickname lookup off', '?.nick ?? t.short', '?.short ?? t.short'],
+  ['lib/replay.mjs', 'late-decided margin widened', 'if (Math.abs(tail[0].m) <= 3) return true;', 'if (Math.abs(tail[0].m) <= 2) return true;'],
+  ['lib/season.mjs', 'a cue in the first quarter counts as catching the finish', 'c.p >= 4 && c.secs >= 30', 'c.p >= 1 && c.secs >= 30'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
-const tests = ['test/model.test.mjs', 'test/hub.test.mjs'];
+const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs'];
 // A mutant that hangs a test counts as caught: the suite has a per test timeout and the run a hard one.
-const run = () => spawnSync('node', ['--test', '--test-timeout=15000', ...tests], {cwd: root, encoding: 'utf8', timeout: 90000}).status;
+const run = () => spawnSync('node', ['--test', '--test-timeout=120000', ...tests], {cwd: root, encoding: 'utf8', timeout: 150000}).status;
 const originals = new Map();
 let bad = 0;
 const restore = () => { for (const [path, src] of originals) writeFileSync(path, src); };
