@@ -132,6 +132,12 @@ export class Hub {
     return {onboarded: s.onboarded, enabled: s.enabled, quiet: s.quiet, paused: rec.household.isPaused(this.now()), silence: silence === 'not_onboarded' ? null : silence};
   }
 
+  /** The service acked that post() returned for this cue. */
+  markPosted(rec, cueId) {
+    const c = rec.cues.get(cueId);
+    if (c && !c.postedAt) c.postedAt = this.now();
+  }
+
   /** Demo day: a household back to a clean night, opted in and following these teams. */
   demoReset(rec, teams) {
     const h = rec.household;

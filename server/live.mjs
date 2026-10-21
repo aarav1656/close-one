@@ -66,6 +66,7 @@ attachWs(server, hub, {
   onMessage: (rec, m, ws) => {
     if (m.type === 'hello') console.log(`device connected to ${rec.id} (${rec.devices.size})`);
     if (m.type === 'ping') ws.send(JSON.stringify({type: 'pong', id: m.id, deviceMs: Date.now()}));
+    if (m.type === 'posted') hub.markPosted(rec, m.id);
     if (m.type === 'posted') logTo('toasts', 'iso,cue_id,send_to_posted_ms,household', [new Date().toISOString(), m.id, Date.now() - (rec.cues.get(m.id)?.ms ?? Date.now()), rec.id]);
   },
 });

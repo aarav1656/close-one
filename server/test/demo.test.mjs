@@ -66,3 +66,16 @@ test('demo final ends the game and the household gets its summary', () => {
   assert.equal(sum.cues, 1);
   assert.equal(sum.waiting, 1);
 });
+
+test('demo status counts connected devices and cues the service acked as posted', () => {
+  const hub = new Hub({});
+  const rec = hub.households.get(hub.pair('tv').householdId);
+  const demo = createDemo(hub, game);
+  rec.devices.add({send() {}}); // a connected TV
+  call(demo, '/demo/prepare');
+  assert.deepEqual(call(demo, '/demo/status').body, {ok: true, households: 1, devices: 1, cues: 0, posted: 0});
+  call(demo, '/demo/cue');
+  assert.equal(call(demo, '/demo/status').body.posted, 0, 'sent but not yet acked');
+  hub.markPosted(rec, [...rec.cues.keys()][0]);
+  assert.deepEqual(call(demo, '/demo/status').body, {ok: true, households: 1, devices: 1, cues: 1, posted: 1});
+});

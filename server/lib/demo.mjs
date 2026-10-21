@@ -1,6 +1,6 @@
 // Demo day. With `node live.mjs --demo` the server also answers two loopback-only calls that drive a finished game
 // through the real pipeline: /demo/prepare puts every paired household on a clean night following the game's teams,
-// /demo/cue plays the game up to the moment Clutch speaks, so a recording reaches a real toast on a real
+// /demo/status says how many TVs are connected and how many cues the service acked as posted. /demo/cue plays the game up to the moment Clutch speaks, so a recording reaches a real toast on a real
 // authenticated socket without waiting for a live game, and /demo/final ends the game so the summary shows.
 import {secsLeft} from './model.mjs';
 import {compare, elapsed} from './showcase.mjs';
@@ -36,6 +36,17 @@ export function createDemo(hub, game) {
       hub.ingest(game.id, meta, row, now);
       const after = [...hub.households.values()].reduce((n, rec) => n + rec.cues.size, 0);
       return reply(res, 200, {ok: true, cues: after - before, at: cueAt.at, secsLeft: secsLeft(row.p, row.c)}), true;
+    }
+    if (req.url === '/demo/status') {
+      const recs = [...hub.households.values()];
+      const count = f => recs.reduce((n, rec) => n + f(rec), 0);
+      return reply(res, 200, {
+        ok: true,
+        households: recs.length,
+        devices: count(rec => rec.devices.size),
+        cues: count(rec => rec.cues.size),
+        posted: count(rec => [...rec.cues.values()].filter(c => c.postedAt).length),
+      }), true;
     }
     if (req.url === '/demo/final') {
       hub.markFinal(game.id, hub.now());

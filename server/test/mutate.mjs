@@ -41,6 +41,7 @@ const mutations = [
   ['lib/hub.mjs', 'demo prepare keeps the night count', 'offset: {}, cues: {}, dismissals: []', 'offset: {}, dismissals: []'],
   ['lib/hub.mjs', 'demo prepare leaves the household out of the opt-in', 'onboarded: true, enabled: true, quiet: null', 'onboarded: false, enabled: true, quiet: null'],
   ['lib/showcase.mjs', 'chart starts at tip-off', 'Math.floor((Math.min(...alerts) - 60) / 60) * 60', '0'],
+  ['lib/hub.mjs', 'posted ack never recorded', 'if (c && !c.postedAt) c.postedAt = this.now();', ''],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
 const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs'];
