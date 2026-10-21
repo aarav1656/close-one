@@ -16,7 +16,7 @@ export const CueCard = ({card, pressure, onWatch, onLater}: {card: Card; pressur
         {card.away ?? 'Away'} at {card.home ?? 'Home'}
       </Text>
       <Text style={base.sub}>{card.when ?? card.body}</Text>
-      {pressure !== undefined ? (
+      {pressure !== undefined && !why ? (
         <View style={styles.meter}>
           <Text style={base.label}>Pressure on the next possession</Text>
           <Pressure value={pressure} />

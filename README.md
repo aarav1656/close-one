@@ -2,7 +2,7 @@
 
 One quiet toast over whatever the household is watching, only when a game they follow turns into a one possession finish. No score in it. The TV learns how often this household wants to be interrupted.
 
-Over the 1,235 completed 2025-26 regular season games, Clutch cues 0.56 times per game, stays silent in 63% of games and still reaches 98.4% of the games that were decided late. It sends nothing in the 171 games decided by 25 or more (`server/eval/results.json`).
+In the 632 games from Jan 15 on, Clutch cues 0.48 times per game against 0.71 for the usual "within 5 points in the last 5 minutes" rule, 32% fewer interruptions, and stays silent in 68% of games. At the same cue budget with two minutes left to switch, it reaches 97 of the 104 games decided late where the best simple rule reaches 93. The bar was chosen on the 603 games before that date and the learning keeps every cue a household wanted while sending 25% fewer it dismissed (`server/eval/results.json`, `npm run test:eval`).
 
 A React Native for Vega app (RN 0.83, Vega SDK 0.24) with a background service that holds a WebSocket and raises a system toast over the app on screen. It runs on the Vega Virtual Device (VVD).
 
@@ -48,7 +48,7 @@ The server checks these before the decision function runs (`gate()` in `server/l
 | After the game | What Clutch did in the game that just ended: cues sent, watched, not now, and where the bar moved | `evidence/vvd-r3/post-game-summary.png` |
 | Settings | Cues on or off, pause tonight, quiet hours, teams, server address | `evidence/vvd-r3/settings.png` |
 | Learning bar | The household's bar on a 0 to 60 scale, where it started, and every cue tonight as a marker: green circle watched, coral diamond not now, ring waiting | `evidence/vvd-r2/learning-bar-dismissed-marker.png` |
-| Cue card | Watch, Not now, and Why now? with the leverage reason in plain words and no score | `evidence/vvd-r3/cue-card-why-now.png` |
+| Cue card | Watch, Not now, and Why this cue?: the pressure on the next possession against the household's bar, the cues left tonight, and the reason in plain words, with no score | `evidence/vvd-r3/why-this-cue.png` |
 | Quiet tonight | Three Not nows within an hour silence the night; a moon panel says so | `app/src/screens/Home.tsx`, `app/test/App.spec.tsx` |
 | Connection lost | Names the server and the retry count, keeps the last update visible | `evidence/vvd-r2/connection-lost.png` |
 | Feed behind, no games tonight, loading | Each has its own copy and the next tip-off when there is one | `app/src/status.ts`, `app/src/screens/Home.tsx` |
@@ -100,7 +100,7 @@ scripts/vvd-up.sh && scripts/fetch-video-sample.sh   # once
 scripts/demo-vvd.sh
 ```
 
-The video sample comes to the front, Clutch's service connects with its device token, one finished game (Bucks at Hawks, `server/showcase/401809247.json`) is driven through the real decision and the cue travels the authenticated socket. The script exits 0 only when the service acked the post, the system notification renderer claimed the screen after the cue, and a frame was saved: `evidence/demo/toast-over-video-*.png`. The toast is two short text lines with an Open Clutch action.
+The video sample comes to the front, Clutch's service connects with its device token, one finished game (Bucks at Hawks, `server/showcase/401809247.json`) is driven through the real decision and the cue travels the authenticated socket. A title plays in the video sample, and the script exits 0 only when two frames two seconds apart differ (the picture is moving), the service acked the frame and the post, the system notification renderer claimed the screen 0 to 3000 ms after the send, and a frame with the toast over the playing video was saved: `evidence/demo/toast-over-video-*.png`. The TV clock is mapped onto the server's by a ping round trip, so `evidence/demo/timing-*.json` carries the send to receive, post and render times of the cue (2 ms, 38 ms and 177 ms in the committed run, `evidence/demo/timing-20261021-131633.json`). The toast is two short text lines with an Open Clutch action.
 
 ## Toast over another app
 
@@ -128,7 +128,7 @@ A Node server reads ESPN's NBA play-by-play every 10 s per live game, turns the 
 
 ```bash
 cd server && npm install
-npm test                              # unit, HTTP and season tests, then 38 mutations that must each turn them red
+npm test                              # unit, HTTP and season tests, then 51 mutations that must each turn them red
 node live.mjs                         # live games for every paired household
 node live.mjs --demo                  # adds loopback-only calls that drive the finished showcase game (used by scripts/demo-vvd.sh)
 node live.mjs --replay 401809238 --speed 12 --skip 0.85   # a cached game through the same pipeline
@@ -140,6 +140,28 @@ npm run test:eval                     # asserts 1,235 games, 257 late-decided, t
 ### Live night
 
 `evidence/live-2026-10-20/` holds the decisions, cues, feedback and toast logs from the first NBA night (76ers at Knicks: two cues in the 4th quarter, toast posted 80 ms and 36 ms after each cue).
+
+### Games from Jan 15 on, with the bar chosen on the games before
+
+`server/lib/budget.mjs` splits the season by date. The bar is picked on the 603 games before 2026-01-15 only: the one with the fewest cues per game that still reaches every late-decided game the within-5-in-5 rule reaches there. It lands on 0.30, the bar the app ships with. Everything below is scored on the 632 games from 2026-01-15 on (104 decided late).
+
+| Games from Jan 15 on | Clutch | "within 5 in the last 5 minutes" |
+|---|---|---|
+| Cues per game | 0.48 (silent in 431 of 632 games) | 0.71 |
+| Late-decided games reached with 30 s or more left | 100 of 104 | 102 of 104 |
+
+Equal budget: at the cue budget Clutch spends, the best within-m-points-in-the-last-t-minutes rule is chosen on the early games and both are scored on the later ones, by how much time the household has left to switch.
+
+| Time left to switch | Clutch, late-decided games reached | Best simple rule at the same budget | Same comparison on the early games |
+|---|---|---|---|
+| 2 minutes | 97 of 104 | 93 (within 3 in the last 3 minutes) | 138 against 132 of 153 |
+| 2.5 minutes | 88 of 104 | 80 (within 3 in the last 3 minutes) | 130 against 115 of 153 |
+
+`server/eval/results.json` holds the same table for 30, 60 and 90 seconds.
+
+### Learning, on identical games
+
+`server/lib/ablation.mjs` replays the 155 nights of a household that follows six teams and accepts a cue only when the Knicks are playing, once with a fixed bar and once with the accept and dismiss learning, through the production engine and household. The fixed bar sends 173 cues, 40 accepted and 133 dismissed. The learning sends 157, 57 accepted and 100 dismissed: 33 fewer dismissed interruptions (25%) and 17 more cues the household wanted.
 
 ### Season replay (1,235 completed 2025-26 regular season games)
 
