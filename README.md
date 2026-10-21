@@ -85,6 +85,10 @@ node live.mjs --replay 401809250 --speed 12 --skip 0.82   # a cached game throug
 node eval/fetch-season.mjs 20251021 20260413 && node eval/season.mjs
 ```
 
+### Live log
+
+`evidence/live-2026-10-20/` holds the decisions, cues, feedback and toast logs from the first real NBA night (76ers at Knicks: two cues in the 4th quarter, toast posted 80 ms and 36 ms after each cue).
+
 ### Season replay (1,235 completed 2025-26 regular season games, 594,525 plays)
 
 A household watches every game with nothing learned and a cap of 2 per game. A game counts as decided late when it was within 3 points with 60 s left in its last period, had a lead change in that minute, or went to overtime (257 games). It is caught when a cue lands in the 4th quarter or overtime with at least 30 s left.
