@@ -50,7 +50,7 @@ export class Engine {
     const secs = secsLeft(row.p, row.c);
     const lev = leverage(row.h - row.a, secs);
     const threshold = this.h.threshold(team.abbr, ms);
-    const reason = decide({secs, lev, threshold, armed: g.armed, cuesTonight: this.h.cuesTonight(ms), cap: this.h.o.cap, quiet: this.h.isQuiet(ms)});
+    const reason = this.h.gate(ms) ?? decide({secs, lev, threshold, armed: g.armed, cuesTonight: this.h.cuesTonight(ms), cap: this.h.o.cap, quiet: this.h.isQuiet(ms)});
     let cue = null;
     if (reason === 'cue') {
       g.armed = false;
@@ -70,7 +70,7 @@ export class Engine {
         why: whyNow({period: row.p, clock: row.c, lev, threshold, base: this.h.o.base, cuesLeft: this.h.o.cap - this.h.cuesTonight(ms) - 1}),
         ...(this.scores ? {score: `${row.a}-${row.h}`} : {}),
       };
-      this.h.recordCue(ms, {cueId: id, team: team.abbr, lev, threshold, period: row.p, clock: row.c});
+      this.h.recordCue(ms, {cueId: id, gameId, team: team.abbr, lev, threshold, period: row.p, clock: row.c});
       this.onCue(cue);
     } else if (!g.armed && lev < threshold * REARM_FRACTION) g.armed = true;
     const out = {ms, gameId, period: row.p, clock: row.c, secs, lev, threshold, espnWp: row.w, reason, cueId: cue?.id ?? ''};

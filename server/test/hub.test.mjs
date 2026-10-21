@@ -6,6 +6,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {WebSocket} from 'ws';
 import {Hub, DAY} from '../lib/hub.mjs';
+import {Household} from '../lib/household.mjs';
 import {createApi, attachWs} from '../lib/api.mjs';
 
 const NY = {abbr: 'NY', short: 'Knicks'};
@@ -29,7 +30,12 @@ async function boot(opts = {}) {
     const res = await fetch(base + path, {method, headers: {...(token ? {authorization: `Bearer ${token}`} : {}), 'content-type': 'application/json'}, body: body ? JSON.stringify(body) : undefined});
     return {status: res.status, json: await res.json()};
   };
-  const pair = async () => (await call('POST', '/api/pair', {body: {name: 'living room'}})).json;
+  // A paired TV that has also finished onboarding, unless the test is about onboarding itself.
+  const pair = async (onboard = true) => {
+    const p = (await call('POST', '/api/pair', {body: {name: 'living room'}})).json;
+    if (onboard) await call('PUT', '/api/settings', {token: p.token, body: {onboarded: true}});
+    return p;
+  };
   const self = {hub, clock, sent, base, call, pair, server, close: () => new Promise(r => { wss.clients.forEach(c => c.terminate()); server.closeAllConnections(); server.close(r); })};
   open.push(self);
   return self;
@@ -242,5 +248,89 @@ test('the showcase replay is served to a paired household', async () => {
   assert.equal(res.json.label, 'Bucks at Hawks');
   assert.equal(res.json.rule.length, 3);
   assert.equal(res.json.clutch.length, 1);
+  await s.close();
+});
+
+test('nothing is sent before the TV opts in, even for a followed team; opting in turns cues on', async () => {
+  const s = await boot();
+  const {token} = await s.pair(false);
+  await s.call('PUT', '/api/follow', {token, body: {teams: ['NY']}});
+  assert.equal((await s.call('GET', '/api/state', {token})).json.settings.onboarded, false);
+  s.hub.ingest('g1', game, tied, s.clock.t);
+  assert.equal(s.sent.length, 0, 'followed, tight game, not opted in');
+  assert.deepEqual((await s.call('PUT', '/api/settings', {token, body: {onboarded: true}})).json.settings, {onboarded: true, enabled: true, quiet: null, paused: false});
+  s.hub.ingest('g1', game, tied, s.clock.t + 1000);
+  assert.equal(s.sent.length, 1);
+  await s.close();
+});
+
+test('the off switch, one press pause for tonight, and quiet hours each stop cues and each can be undone', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  await s.call('PUT', '/api/follow', {token, body: {teams: ['NY']}});
+  const st = async () => (await s.call('GET', '/api/state', {token})).json.settings;
+  const tryCue = id => {
+    const before = s.sent.length;
+    s.hub.ingest(id, game, tied, s.clock.t);
+    return s.sent.length - before;
+  };
+
+  await s.call('PUT', '/api/settings', {token, body: {enabled: false}});
+  assert.equal(tryCue('off'), 0, 'switched off');
+  await s.call('PUT', '/api/settings', {token, body: {enabled: true}});
+
+  assert.equal((await s.call('POST', '/api/pause', {token, body: {paused: true}})).json.settings.paused, true);
+  assert.equal(tryCue('paused'), 0, 'paused for tonight');
+  assert.equal((await st()).paused, true);
+  s.clock.t += 20 * 3600e3; // the next night
+  assert.equal((await st()).paused, false, 'the pause ends with the night');
+  assert.equal(tryCue('nextnight'), 1, 'and cues flow again the next night');
+  s.clock.t -= 20 * 3600e3;
+  await s.call('POST', '/api/pause', {token, body: {paused: false}});
+
+  // 01:00 UTC. A TV at UTC-5 is at 20:00: quiet from 19 to 23 covers it, quiet from 22 to 7 does not.
+  await s.call('PUT', '/api/settings', {token, body: {offsetMin: -300, quiet: {from: 19, to: 23}}});
+  assert.equal(tryCue('quiet1'), 0, 'inside quiet hours');
+  await s.call('PUT', '/api/settings', {token, body: {quiet: {from: 22, to: 7}}});
+  assert.equal(tryCue('quiet2'), 1, 'outside quiet hours, the cue goes out');
+  assert.deepEqual((await st()).quiet, {from: 22, to: 7});
+  await s.close();
+});
+
+test('quiet hours that wrap midnight cover both sides of it', () => {
+  const h = new Household();
+  h.settings = {onboarded: true, enabled: true, quiet: {from: 22, to: 7}, offsetMin: 0, pausedNight: null};
+  const at = hour => Date.parse(`2026-10-21T${String(hour).padStart(2, '0')}:30:00Z`);
+  const verdicts = [21, 22, 23, 0, 3, 6, 7, 8].map(x => [x, h.gate(at(x))]);
+  assert.deepEqual(verdicts, [[21, null], [22, 'quiet_hours'], [23, 'quiet_hours'], [0, 'quiet_hours'], [3, 'quiet_hours'], [6, 'quiet_hours'], [7, null], [8, null]]);
+});
+
+test('settings reject anything that is not a switch the household owns', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  for (const body of [{enabled: 'yes'}, {onboarded: 1}, {quiet: {from: 25, to: 1}}, {quiet: {from: 1}}, {offsetMin: 9999}, {cap: 50}, {unknown: true}, [1]]) {
+    assert.equal((await s.call('PUT', '/api/settings', {token, body})).status, 400, JSON.stringify(body));
+  }
+  assert.equal((await s.call('POST', '/api/pause', {token, body: {paused: 'tonight'}})).status, 400);
+  assert.equal((await s.call('PUT', '/api/settings', {token: 'z'.repeat(43), body: {enabled: false}})).status, 401);
+  await s.close();
+});
+
+test('after a game ends the household gets a summary: cues sent, how they were answered, where the bar went', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  await s.call('PUT', '/api/follow', {token, body: {teams: ['NY']}});
+  s.hub.show('g1', game, tied, 'live');
+  s.hub.ingest('g1', game, tied, s.clock.t);
+  await s.call('POST', '/api/feedback', {token, body: {cueId: s.sent[0][1], action: 'dismiss'}});
+  assert.deepEqual((await s.call('GET', '/api/state', {token})).json.summaries, [], 'nothing before the game is over');
+  s.hub.markFinal('g1');
+  const [sum] = (await s.call('GET', '/api/state', {token})).json.summaries;
+  assert.deepEqual({...sum, from: +sum.from.toFixed(2), to: +sum.to.toFixed(2)}, {gameId: 'g1', label: '76ers at Knicks', cues: 1, accepted: 0, dismissed: 1, waiting: 0, from: 0.3, to: 0.35});
+  // a followed game that ended without a cue is a summary too: silence is the product working
+  s.hub.show('g2', {home: {abbr: 'NY', short: 'Knicks'}, away: {abbr: 'BOS', short: 'Celtics'}}, {p: 4, c: 0, h: 100, a: 80}, 'live');
+  s.hub.markFinal('g2');
+  const quiet = (await s.call('GET', '/api/state', {token})).json.summaries.find(x => x.gameId === 'g2');
+  assert.equal(quiet.cues, 0);
   await s.close();
 });

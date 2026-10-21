@@ -1,5 +1,6 @@
 // Household policy: a base leverage threshold, a per team and hour offset learned from
-// accept and dismiss, a nightly cap, and a quiet period after repeated dismissals.
+// accept and dismiss, a nightly cap, a quiet period after repeated dismissals, and the household's own
+// switches: opt-in, an off switch, quiet hours and a pause for tonight.
 import {readFileSync, writeFileSync, existsSync, mkdirSync} from 'node:fs';
 import {dirname} from 'node:path';
 
@@ -8,6 +9,11 @@ export const DEFAULTS = {base: 0.3, cap: 2, acceptStep: 0.03, dismissStep: 0.05,
 /** The night a moment belongs to: US Eastern date, with the day rolling over at 5 am so late games stay in the same night. */
 export const nightOf = ms => new Date(ms - 5 * 3600e3).toLocaleDateString('en-CA', {timeZone: 'America/New_York'});
 export const hourOf = ms => Number(new Date(ms).toLocaleString('en-US', {timeZone: 'America/New_York', hour: 'numeric', hour12: false})) % 24;
+
+export const DEFAULT_SETTINGS = {onboarded: false, enabled: true, quiet: null, offsetMin: 0, pausedNight: null};
+
+/** The household's local hour of the day, from the minutes the TV's clock is offset from UTC. */
+export const localHour = (ms, offsetMin) => Math.floor((((ms / 60000 + offsetMin) % 1440) + 1440) % 1440 / 60);
 
 export class Household {
   constructor(opts = {}, file) {
@@ -18,18 +24,35 @@ export class Household {
     this.dismissals = []; // ms
     this.quietNight = null;
     this.events = []; // {ms, cueId, team, hour, action}
+    this.settings = {...DEFAULT_SETTINGS};
     this.log = []; // one row per cue sent: {cueId, ms, team, lev, threshold, period, clock, action, after}
     if (file && existsSync(file)) Object.assign(this, JSON.parse(readFileSync(file, 'utf8')));
   }
   save() {
     if (!this.file) return;
     mkdirSync(dirname(this.file), {recursive: true});
-    const {offset, cues, dismissals, quietNight, events, log} = this;
-    writeFileSync(this.file, JSON.stringify({offset, cues, dismissals, quietNight, events, log: log.slice(-200)}));
+    const {offset, cues, dismissals, quietNight, events, log, settings} = this;
+    writeFileSync(this.file, JSON.stringify({offset, cues, dismissals, quietNight, events, settings, log: log.slice(-200)}));
   }
   threshold(team, ms) {
     const off = this.offset[`${team}:${hourOf(ms)}`] ?? 0;
     return Math.min(this.o.max, Math.max(this.o.min, this.o.base + off));
+  }
+  /** Why no cue may be sent right now by the household's own choice, or null. Opt-in comes first: nothing is sent before the TV turns cues on. */
+  gate(ms) {
+    const s = this.settings;
+    if (!s.onboarded) return 'not_onboarded';
+    if (!s.enabled) return 'off';
+    if (s.pausedNight === nightOf(ms)) return 'paused';
+    if (s.quiet) {
+      const h = localHour(ms, s.offsetMin);
+      const {from, to} = s.quiet;
+      if (from === to ? false : from < to ? h >= from && h < to : h >= from || h < to) return 'quiet_hours';
+    }
+    return null;
+  }
+  isPaused(ms) {
+    return this.settings.pausedNight === nightOf(ms);
   }
   cuesTonight(ms) {
     return this.cues[nightOf(ms)] ?? 0;

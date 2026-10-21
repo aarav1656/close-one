@@ -4,7 +4,7 @@
 import {createHash, randomBytes} from 'node:crypto';
 import {readFileSync, writeFileSync, existsSync, mkdirSync, renameSync} from 'node:fs';
 import {join} from 'node:path';
-import {Household} from './household.mjs';
+import {Household, nightOf} from './household.mjs';
 import {Engine} from './engine.mjs';
 import {secsLeft, leverage} from './model.mjs';
 import {TEAM_ABBRS, nick} from './teams.mjs';
@@ -96,6 +96,41 @@ export class Hub {
     return [...rec.follow];
   }
 
+  /** Validates and applies the household's switches. Cues stay off until the TV sends onboarded: true. */
+  setSettings(rec, patch) {
+    const bad = () => new HubError(400, 'bad_settings');
+    if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw bad();
+    const next = {...rec.household.settings};
+    for (const [k, v] of Object.entries(patch)) {
+      if (k === 'onboarded' || k === 'enabled') {
+        if (typeof v !== 'boolean') throw bad();
+        next[k] = v;
+      } else if (k === 'offsetMin') {
+        if (!Number.isInteger(v) || Math.abs(v) > 840) throw bad();
+        next.offsetMin = v;
+      } else if (k === 'quiet') {
+        if (v !== null && !(v && Number.isInteger(v.from) && Number.isInteger(v.to) && v.from >= 0 && v.from <= 23 && v.to >= 0 && v.to <= 23)) throw bad();
+        next.quiet = v === null ? null : {from: v.from, to: v.to};
+      } else throw bad();
+    }
+    rec.household.settings = next;
+    rec.household.save();
+    return this.#settingsOf(rec);
+  }
+
+  /** One press: no cues for the rest of tonight (until the 5 am rollover), or back on. */
+  pause(rec, paused) {
+    if (typeof paused !== 'boolean') throw new HubError(400, 'bad_settings');
+    rec.household.settings.pausedNight = paused ? nightOf(this.now()) : null;
+    rec.household.save();
+    return this.#settingsOf(rec);
+  }
+
+  #settingsOf(rec) {
+    const s = rec.household.settings;
+    return {onboarded: s.onboarded, enabled: s.enabled, quiet: s.quiet, paused: rec.household.isPaused(this.now())};
+  }
+
   #cued(rec, cue) {
     rec.cues.set(cue.id, {...cue, answered: false});
     rec.active = cue;
@@ -166,6 +201,8 @@ export class Hub {
       active: act && now - act.ms < this.cueTtlMs ? this.#card(act) : null,
       tonight: {cues: h.cuesTonight(now), cap: h.o.cap, quiet: h.isQuiet(now)},
       follow: [...rec.follow],
+      settings: this.#settingsOf(rec),
+      summaries: this.#summaries(rec, now),
       games,
       upcoming: this.upcoming,
       feed: {ok: this.feed.ok, ageMs: this.feed.updatedAt ? now - this.feed.updatedAt : null},
@@ -177,6 +214,29 @@ export class Hub {
         cues: h.tonight(now).map(({cueId, team, lev, threshold, action, after, period, clock}) => ({cueId, team, lev, threshold, action, after, period, clock})),
       },
     };
+  }
+
+  /** One line per finished game the household followed: cues sent, how they were answered, where the bar went. */
+  #summaries(rec, now) {
+    const h = rec.household;
+    const tonight = h.tonight(now);
+    return [...this.view.values()]
+      .filter(g => g.status === 'final' && now - g.at < 2 * 3600e3 && (rec.follow.has(g.homeAbbr) || rec.follow.has(g.awayAbbr)))
+      .map(g => {
+        const rows = tonight.filter(r => r.gameId === g.id);
+        const team = rec.follow.has(g.homeAbbr) ? g.homeAbbr : g.awayAbbr;
+        const last = [...rows].reverse().find(r => r.after !== null);
+        return {
+          gameId: g.id,
+          label: g.label,
+          cues: rows.length,
+          accepted: rows.filter(r => r.action === 'accept').length,
+          dismissed: rows.filter(r => r.action === 'dismiss').length,
+          waiting: rows.filter(r => r.action === null).length,
+          from: rows.length ? rows[0].threshold : h.threshold(team, now),
+          to: last ? last.after : rows.length ? rows[rows.length - 1].threshold : h.threshold(team, now),
+        };
+      });
   }
 
   #card(cue) {

@@ -70,6 +70,8 @@ export function createApi(hub, {pairsPerMinute = 20, now = Date.now} = {}) {
         const {teams} = await readJson(req);
         return json(res, 200, {ok: true, follow: hub.setFollow(rec, teams)});
       }
+      if (route === 'PUT /api/settings') return json(res, 200, {ok: true, settings: hub.setSettings(rec, await readJson(req))});
+      if (route === 'POST /api/pause') return json(res, 200, {ok: true, settings: hub.pause(rec, (await readJson(req)).paused)});
       if (route === 'POST /api/feedback') {
         const {cueId, action} = await readJson(req);
         return json(res, 200, {ok: hub.answer(rec, cueId, action)});

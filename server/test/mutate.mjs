@@ -28,6 +28,15 @@ const mutations = [
   ['lib/showcase.mjs', 'simple rule alerts on every play', 'if (holds && !inside) {', 'if (holds) {'],
   ['lib/showcase.mjs', 'overtime clock ignored', 'REG_SECS + (p - 5) * OT_SECS', 'REG_SECS'],
   ['lib/showcase.mjs', 'quiet reason hides the bar', 'under the bar of ${points(base)}.`', 'at stake.`'],
+  ['lib/household.mjs', 'cues before opt-in', "if (!s.onboarded) return 'not_onboarded';", ''],
+  ['lib/household.mjs', 'off switch ignored', "if (!s.enabled) return 'off';", ''],
+  ['lib/household.mjs', 'pause ignored', "if (s.pausedNight === nightOf(ms)) return 'paused';", ''],
+  ['lib/household.mjs', 'quiet hours ignored', 'if (s.quiet) {', 'if (false) {'],
+  ['lib/household.mjs', 'quiet hours stop at midnight', 'from < to ? h >= from && h < to : h >= from || h < to', 'h >= from && h < to'],
+  ['lib/household.mjs', 'pause never ends', "s.pausedNight === nightOf(ms)) return 'paused'", "s.pausedNight !== null) return 'paused'"],
+  ['lib/hub.mjs', 'settings accept any offset', 'if (!Number.isInteger(v) || Math.abs(v) > 840) throw bad();', ''],
+  ['lib/hub.mjs', 'settings accept any key', '} else throw bad();', '}'],
+  ['lib/hub.mjs', 'summary mixes games', 'tonight.filter(r => r.gameId === g.id)', 'tonight'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
 const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs'];
