@@ -7,8 +7,16 @@ import {dirname} from 'node:path';
 export const DEFAULTS = {base: 0.3, cap: 2, acceptStep: 0.03, dismissStep: 0.05, min: 0.15, max: 0.6, quietAfter: 3, quietWindowMs: 3600e3};
 
 /** The night a moment belongs to: US Eastern date, with the day rolling over at 5 am so late games stay in the same night. */
-export const nightOf = ms => new Date(ms - 5 * 3600e3).toLocaleDateString('en-CA', {timeZone: 'America/New_York'});
-export const hourOf = ms => Number(new Date(ms).toLocaleString('en-US', {timeZone: 'America/New_York', hour: 'numeric', hour12: false})) % 24;
+const memo = f => {
+  const seen = new Map(); // Eastern time has whole hour offsets, so one answer per UTC hour holds for the hour
+  return ms => {
+    const k = Math.floor(ms / 3600e3);
+    if (!seen.has(k)) seen.set(k, f(ms));
+    return seen.get(k);
+  };
+};
+export const nightOf = memo(ms => new Date(ms - 5 * 3600e3).toLocaleDateString('en-CA', {timeZone: 'America/New_York'}));
+export const hourOf = memo(ms => Number(new Date(ms).toLocaleString('en-US', {timeZone: 'America/New_York', hour: 'numeric', hour12: false})) % 24);
 
 export const DEFAULT_SETTINGS = {onboarded: false, enabled: true, quiet: null, offsetMin: 0, pausedNight: null};
 

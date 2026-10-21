@@ -475,5 +475,34 @@
         }
       }
     ]
+  },
+  "learning": {
+    "script": {
+      "follow": [
+        "NY",
+        "BOS",
+        "LAL",
+        "GS",
+        "OKC",
+        "MIA"
+      ],
+      "own": "NY"
+    },
+    "nights": 155,
+    "fixed": {
+      "cues": 173,
+      "accepted": 40,
+      "dismissed": 133,
+      "quietNights": 0
+    },
+    "adaptive": {
+      "cues": 157,
+      "accepted": 57,
+      "dismissed": 100,
+      "quietNights": 0
+    },
+    "dismissalsSaved": 33,
+    "dismissalsSavedShare": 0.24812030075187969,
+    "acceptsKept": 1.425
   }
 }

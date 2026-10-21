@@ -3,6 +3,7 @@
 import {readdirSync, readFileSync} from 'node:fs';
 import {rows, modelCues, ruleCues, decidedLate, finalMargin} from './replay.mjs';
 import {homeWinProb} from './model.mjs';
+import {ablate} from './ablation.mjs';
 import {split, prepare, tuneBase, equalBudget, modelOf, score, LEADS, TUNE_BEFORE} from './budget.mjs';
 
 export const GAMES_DIR = new URL('../data/games/', import.meta.url).pathname;
@@ -97,6 +98,7 @@ export function runEval(all) {
   for (const [name, g] of Object.entries(sets)) if (g.length) out.sets[name] = evaluate(g, 0.3);
   for (const b of BASES) out.sensitivity[b] = evaluate(all, b);
   out.heldBack = heldBack(all);
+  out.learning = ablate(all.filter(g => g.date < SEASON_SPLIT));
   return out;
 }
 

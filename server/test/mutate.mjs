@@ -46,6 +46,9 @@ const mutations = [
   ['lib/budget.mjs', 'equal budget lets the rule spend more', 'if (s.cuesPerGame > clutchTune.cuesPerGame + 1e-9) continue;', ''],
   ['lib/budget.mjs', 'caught ignores the time left', 'cues.some(c => c.p >= 4 && c.secs >= lead)', 'cues.some(c => c.p >= 4 && c.secs >= 30)'],
   ['lib/budget.mjs', 'bar chosen for the most cues', 'ok.sort((a, b) => a.cuesPerGame - b.cuesPerGame);', 'ok.sort((a, b) => b.cuesPerGame - a.cuesPerGame);'],
+  ['lib/ablation.mjs', 'the household accepts every cue', "g.home.abbr === own || g.away.abbr === own ? 'accept' : 'dismiss'", "'accept'"],
+  ['lib/ablation.mjs', 'fixed run also learns', "{base, cap, acceptStep: 0, dismissStep: 0, quietAfter: Infinity}", "{base, cap}"],
+  ['lib/household.mjs', 'dismissal never raises the bar', 'const step = action === \'accept\' ? -this.o.acceptStep : this.o.dismissStep;', 'const step = action === \'accept\' ? -this.o.acceptStep : 0;'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
 const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs'];

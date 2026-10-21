@@ -104,3 +104,14 @@ test('the whole lead-time table is in the results, losses included', () => {
   const short = hb.equalBudget.find(e => e.lead === 30);
   assert.ok(short.report.simple.caught >= short.report.clutch.caught, 'with only 30 s left a last-minute rule keeps up: printed, not hidden');
 });
+
+test('learning ablation on identical games: a household that accepts only Knicks cues gets 33 fewer dismissed interruptions and 17 more accepted ones', () => {
+  const l = out.learning;
+  assert.equal(l.script.own, 'NY');
+  assert.equal(l.nights, 155);
+  assert.deepEqual(l.fixed, {cues: 173, accepted: 40, dismissed: 133, quietNights: 0});
+  assert.deepEqual(l.adaptive, {cues: 157, accepted: 57, dismissed: 100, quietNights: 0});
+  assert.equal(l.dismissalsSaved, 33);
+  assert.equal((100 * l.dismissalsSavedShare).toFixed(1), '24.8');
+  assert.ok(l.acceptsKept >= 1, 'learning keeps every cue the household wanted');
+});
