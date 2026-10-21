@@ -132,10 +132,33 @@ export class Hub {
     return {onboarded: s.onboarded, enabled: s.enabled, quiet: s.quiet, paused: rec.household.isPaused(this.now()), silence: silence === 'not_onboarded' ? null : silence};
   }
 
-  /** The service acked that post() returned for this cue. */
-  markPosted(rec, cueId) {
+  /** The service acked that the frame arrived (deviceMs is the TV's clock). */
+  markRecv(rec, cueId, deviceMs) {
     const c = rec.cues.get(cueId);
-    if (c && !c.postedAt) c.postedAt = this.now();
+    if (c && !c.recvAt) Object.assign(c, {recvAt: this.now(), recvDeviceMs: deviceMs});
+  }
+
+  /** The service acked that post() returned for this cue. */
+  markPosted(rec, cueId, deviceMs) {
+    const c = rec.cues.get(cueId);
+    if (c && !c.postedAt) Object.assign(c, {postedAt: this.now(), postedDeviceMs: deviceMs});
+  }
+
+  /** Ask every connected TV for its clock. The reply gives the offset between the TV's clock and this one, from the midpoint of the round trip. */
+  ping(rec) {
+    rec.pings ??= new Map();
+    const id = (this.lastPingId = (this.lastPingId ?? 0) + 1);
+    rec.pings.set(id, this.now());
+    for (const ws of rec.devices) ws.send(JSON.stringify({type: 'ping', id}));
+  }
+
+  markPong(rec, pingId, deviceMs) {
+    const sent = rec.pings?.get(pingId);
+    if (sent === undefined) return;
+    rec.pings.delete(pingId);
+    const received = this.now();
+    rec.clockOffsetMs = deviceMs - (sent + received) / 2;
+    rec.pingRoundTripMs = received - sent;
   }
 
   /** Demo day: a household back to a clean night, opted in and following these teams. */

@@ -73,9 +73,40 @@ test('demo status counts connected devices and cues the service acked as posted'
   const demo = createDemo(hub, game);
   rec.devices.add({send() {}}); // a connected TV
   call(demo, '/demo/prepare');
-  assert.deepEqual(call(demo, '/demo/status').body, {ok: true, households: 1, devices: 1, cues: 0, posted: 0});
+  const first = call(demo, '/demo/status').body;
+  assert.deepEqual([first.households, first.devices, first.cues, first.posted, first.timings], [1, 1, 0, 0, []]);
   call(demo, '/demo/cue');
   assert.equal(call(demo, '/demo/status').body.posted, 0, 'sent but not yet acked');
-  hub.markPosted(rec, [...rec.cues.keys()][0]);
-  assert.deepEqual(call(demo, '/demo/status').body, {ok: true, households: 1, devices: 1, cues: 1, posted: 1});
+  hub.markPosted(rec, [...rec.cues.keys()][0], 5000);
+  const second = call(demo, '/demo/status').body;
+  assert.deepEqual([second.cues, second.posted], [1, 1]);
+});
+
+test('the TV clock offset comes from the midpoint of a ping round trip, and each cue keeps the TV time of its recv and posted acks', () => {
+  let t = 1_000_000;
+  const sent = [];
+  const hub = new Hub({now: () => t});
+  const rec = hub.households.get(hub.pair('tv').householdId);
+  rec.devices.add({send: m => sent.push(JSON.parse(m))});
+  const demo = createDemo(hub, game);
+  call(demo, '/demo/prepare');
+
+  call(demo, '/demo/ping');
+  assert.equal(sent[0].type, 'ping');
+  t += 40; // the reply is 40 ms later; the TV read its clock halfway, at server time 1_000_020
+  hub.markPong(rec, sent[0].id, 1_000_020 + 3_600_000); // the TV runs an hour ahead
+  const st = call(demo, '/demo/status').body;
+  assert.equal(st.clockOffsetMs, 3_600_000);
+  assert.equal(st.pingRoundTripMs, 40);
+  hub.markPong(rec, sent[0].id, 0); // a reply to a ping already answered changes nothing
+  assert.equal(call(demo, '/demo/status').body.clockOffsetMs, 3_600_000);
+
+  call(demo, '/demo/cue');
+  const id = [...rec.cues.keys()][0];
+  t += 30;
+  hub.markRecv(rec, id, t + 3_600_000);
+  t += 25;
+  hub.markPosted(rec, id, t + 3_600_000);
+  const [row] = call(demo, '/demo/status').body.timings;
+  assert.deepEqual(row, {cueId: id, sendMs: 1_000_040, recvAtMs: 1_000_070, recvDeviceMs: 1_000_070 + 3_600_000, postedAtMs: 1_000_095, postedDeviceMs: 1_000_095 + 3_600_000});
 });

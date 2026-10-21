@@ -41,7 +41,7 @@ const mutations = [
   ['lib/hub.mjs', 'demo prepare keeps the night count', 'offset: {}, cues: {}, dismissals: []', 'offset: {}, dismissals: []'],
   ['lib/hub.mjs', 'demo prepare leaves the household out of the opt-in', 'onboarded: true, enabled: true, quiet: null', 'onboarded: false, enabled: true, quiet: null'],
   ['lib/showcase.mjs', 'chart starts at tip-off', 'Math.floor((Math.min(...alerts) - 60) / 60) * 60', '0'],
-  ['lib/hub.mjs', 'posted ack never recorded', 'if (c && !c.postedAt) c.postedAt = this.now();', ''],
+  ['lib/hub.mjs', 'posted ack never recorded', 'if (c && !c.postedAt) Object.assign(c, {postedAt: this.now(), postedDeviceMs: deviceMs});', ''],
   ['lib/budget.mjs', 'tuning games leak into the report', "export const TUNE_BEFORE = '20260115';", "export const TUNE_BEFORE = '20260215';"],
   ['lib/budget.mjs', 'equal budget lets the rule spend more', 'if (s.cuesPerGame > clutchTune.cuesPerGame + 1e-9) continue;', ''],
   ['lib/budget.mjs', 'caught ignores the time left', 'cues.some(c => c.p >= 4 && c.secs >= lead)', 'cues.some(c => c.p >= 4 && c.secs >= 30)'],
@@ -49,9 +49,15 @@ const mutations = [
   ['lib/ablation.mjs', 'the household accepts every cue', "g.home.abbr === own || g.away.abbr === own ? 'accept' : 'dismiss'", "'accept'"],
   ['lib/ablation.mjs', 'fixed run also learns', "{base, cap, acceptStep: 0, dismissStep: 0, quietAfter: Infinity}", "{base, cap}"],
   ['lib/household.mjs', 'dismissal never raises the bar', 'const step = action === \'accept\' ? -this.o.acceptStep : this.o.dismissStep;', 'const step = action === \'accept\' ? -this.o.acceptStep : 0;'],
+  ['lib/hub.mjs', 'clock offset ignores the round trip', 'rec.clockOffsetMs = deviceMs - (sent + received) / 2;', 'rec.clockOffsetMs = deviceMs - sent;'],
+  ['lib/hub.mjs', 'recv time never kept', 'Object.assign(c, {recvAt: this.now(), recvDeviceMs: deviceMs});', ''],
+  ['lib/demo-timing.mjs', 'any client counts as the renderer', '.*notification.*Client Requesting', '.*Client Requesting'],
+  ['lib/demo-timing.mjs', 'a claim before the post counts', 'c >= onServer(postedDeviceMs) - 50', 'true'],
+  ['lib/demo-timing.mjs', 'TV clock not mapped onto the server clock', 'const onServer = tvMs => tvMs - clockOffsetMs;', 'const onServer = tvMs => tvMs;'],
+  ['lib/demo-timing.mjs', 'render window never fails', 'sendToRenderMs >= 0 && sendToRenderMs <= RENDER_WINDOW_MS', 'true'],
   ['lib/api.mjs', 'pairing unlimited', 'if (recent.length >= pairsPerMinute) throw', 'if (false) throw'],
 ];
-const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs'];
+const tests = ['test/model.test.mjs', 'test/hub.test.mjs', 'test/season.test.mjs', 'test/showcase.test.mjs', 'test/demo.test.mjs', 'test/demo-timing.test.mjs'];
 // A mutant that hangs a test counts as caught: the suite has a per test timeout and the run a hard one.
 const run = () => spawnSync('node', ['--test', '--test-timeout=120000', ...tests], {cwd: root, encoding: 'utf8', timeout: 150000}).status;
 const originals = new Map();

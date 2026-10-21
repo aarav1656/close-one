@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "test": "node --test --test-timeout=15000 test/model.test.mjs test/hub.test.mjs test/showcase.test.mjs test/demo.test.mjs && npm run test:eval && node test/mutate.mjs",
+    "test": "node --test --test-timeout=15000 test/model.test.mjs test/hub.test.mjs test/showcase.test.mjs test/demo.test.mjs test/demo-timing.test.mjs && npm run test:eval && node test/mutate.mjs",
     "fetch": "node eval/fetch-season.mjs",
     "eval": "node eval/season.mjs",
     "test:eval": "node --test --test-timeout=120000 test/season.test.mjs",
