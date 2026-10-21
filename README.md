@@ -12,7 +12,7 @@ A React Native for Vega app (RN 0.83, Vega SDK 0.24) with a background service t
 | Cue server | `server/` | Per household teams, thresholds and nightly cap; device token auth; ESPN ingest; season replay eval |
 | Toast spike | `spikes/toast/` | Cue server, run script, latency CSVs and device logs for 20 sends over a foreground app |
 | Scripts | `scripts/` | VVD boot, dev shell with retry, D-pad driver, video sample build, server address switch |
-| Evidence | `evidence/` | VVD screens and focus logs, live night logs, season results |
+| Evidence | `evidence/` | VVD screens and focus logs, live night logs, the demo toast capture, season results |
 | Friction log | `FRICTION.md` | Install and build friction with exact error text |
 
 ## Households
@@ -26,14 +26,29 @@ A TV pairs with the server on first launch (`POST /api/pair`) and gets a device 
 
 `server/test/hub.test.mjs` exercises all of it over real HTTP and WebSocket connections. `server/test/mutate.mjs` breaks 19 guards one at a time (token expiry, cross household lookup, expiry window, answer-twice, team list check, socket hello, pairing limit and more) and requires the tests to turn red each time.
 
+## Opt-in and the household's own switches
+
+Nothing is sent before the TV opts in. First launch walks three steps: pick teams, choose quiet hours, then Turn cues on, the only press that starts cues (`app/src/App.tsx`, `server/lib/household.mjs`). After that, every switch is one press:
+
+- **Off switch.** Settings turns every cue off, from every game, until it is turned back on.
+- **Pause tonight.** One button on Home silences every cue until the 5 am rollover, or until Resume.
+- **Quiet hours.** Never a cue between the chosen hours, in the household's own time zone, across midnight too.
+- **Teams.** Only games with a followed team in them can cue.
+
+The server checks these before the decision function runs (`gate()` in `server/lib/household.mjs`) and `server/test/hub.test.mjs` exercises each one, including that a followed team on a tight game stays silent until the household has opted in.
+
 ## The app
 
 | Screen | What it shows | Evidence |
 |---|---|---|
 | Team picker | 30 teams on a D-pad grid, selected teams filled in amber, saved to the household | `evidence/vvd-r2/team-picker.png` |
-| Home | Games of the teams you follow with a pressure meter, interruptions left tonight, the learning bar | `evidence/vvd-r2/home-game-pressure.png` |
+| Setup | Teams, quiet hours, Turn cues on: three steps before the first cue | `evidence/vvd-r3/setup-quiet-hours.png`, `evidence/vvd-r3/setup-turn-cues-on.png` |
+| Home | Games of the teams you follow with a pressure meter, interruptions left tonight, the learning bar, Pause tonight | `evidence/vvd-r2/home-game-pressure.png` |
+| Same game, two rules | One finished game on its own clock: the pressure on every possession, every alert the simple rule would have sent against the one Clutch sent, and the reason for each | `evidence/vvd-r3/same-game-two-rules.png` |
+| After the game | What Clutch did in the game that just ended: cues sent, watched, not now, and where the bar moved | `evidence/vvd-r3/post-game-summary.png` |
+| Settings | Cues on or off, pause tonight, quiet hours, teams, server address | `evidence/vvd-r3/settings.png` |
 | Learning bar | The household's bar on a 0 to 60 scale, where it started, and every cue tonight as a marker: green circle watched, coral diamond not now, ring waiting | `evidence/vvd-r2/learning-bar-dismissed-marker.png` |
-| Cue card | Watch, Not now, and Why now? with the leverage reason in plain words and no score | `evidence/vvd-r2/why-now.png` |
+| Cue card | Watch, Not now, and Why now? with the leverage reason in plain words and no score | `evidence/vvd-r3/cue-card-why-now.png` |
 | Quiet tonight | Three Not nows within an hour silence the night; a moon panel says so | `app/src/screens/Home.tsx`, `app/test/App.spec.tsx` |
 | Connection lost | Names the server and the retry count, keeps the last update visible | `evidence/vvd-r2/connection-lost.png` |
 | Feed behind, no games tonight, loading | Each has its own copy and the next tip-off when there is one | `app/src/status.ts`, `app/src/screens/Home.tsx` |
@@ -78,6 +93,15 @@ scripts/dpad.sh KEY_RIGHT KEY_DOWN KEY_ENTER   # presses keys, prints the focus 
 
 D-pad on the VVD: arrow keys, Enter is select, Esc is back, F1 is home. From a script, `vega exec vda shell "inputd-cli button_press KEY_RIGHT"` (developer mode is on when `vsm developer-mode` prints `developer-mode: enable`).
 
+## Demo day
+
+```bash
+scripts/vvd-up.sh && scripts/fetch-video-sample.sh   # once
+scripts/demo-vvd.sh
+```
+
+The video sample comes to the front, Clutch's service connects with its device token, one finished game (Bucks at Hawks, `server/showcase/401809247.json`) is driven through the real decision and the cue travels the authenticated socket. The script exits 0 only when the service acked the post, the system notification renderer claimed the screen after the cue, and a frame was saved: `evidence/demo/toast-over-video-*.png`. The toast is two short text lines with an Open Clutch action.
+
 ## Toast over another app
 
 The app starts its service by URI on every launch (`app/src/App.tsx`: `Linking.openURL('pkg://com.clutch.tv.cue.service')`). The service (`app/src/headless/CueService.ts`) reads the device token and server address the app stored, opens the WebSocket, sends `hello`, and posts a `MenuToastRenderTemplate` toast for every cue frame (`app/src/notify/toast.ts`). The icon is the Clutch mark the server hosts at `/assets/clutch-icon.png` (`server/assets/clutch-icon.png`).
@@ -104,10 +128,13 @@ A Node server reads ESPN's NBA play-by-play every 10 s per live game, turns the 
 
 ```bash
 cd server && npm install
-npm test                              # unit and HTTP tests, then 19 mutations that must each turn them red
+npm test                              # unit, HTTP and season tests, then 38 mutations that must each turn them red
 node live.mjs                         # live games for every paired household
+node live.mjs --demo                  # adds loopback-only calls that drive the finished showcase game (used by scripts/demo-vvd.sh)
 node live.mjs --replay 401809238 --speed 12 --skip 0.85   # a cached game through the same pipeline
-node eval/fetch-season.mjs 20251021 20260413 && node eval/season.mjs
+node eval/fetch-season.mjs 20251021 20260413   # caches the season's play-by-play in data/games/
+npm run eval                          # recomputes every figure below into eval/results.json
+npm run test:eval                     # asserts 1,235 games, 257 late-decided, the cue and recall figures
 ```
 
 ### Live night
@@ -115,6 +142,8 @@ node eval/fetch-season.mjs 20251021 20260413 && node eval/season.mjs
 `evidence/live-2026-10-20/` holds the decisions, cues, feedback and toast logs from the first NBA night (76ers at Knicks: two cues in the 4th quarter, toast posted 80 ms and 36 ms after each cue).
 
 ### Season replay (1,235 completed 2025-26 regular season games)
+
+The games are ESPN's play-by-play for every completed 2025-26 regular season game, fetched by `server/eval/fetch-season.mjs` and cached locally. `server/lib/season.mjs` evaluates them, `npm run eval` prints the headline and rewrites `server/eval/results.json`, and `server/test/season.test.mjs` recomputes everything from the cache and requires the committed results to match it. The win probability is a closed form random walk approximation (`server/lib/model.mjs`), checked against ESPN's per-play probability below.
 
 A household watches every game with nothing learned and a cap of 2 per game. A game counts as decided late when it was within 3 points with 60 s left in its last period, had a lead change in that minute, or went to overtime (257 games). It is caught when a cue lands in the 4th quarter or overtime with at least 30 s left.
 

@@ -14,7 +14,7 @@ const mutations = [
   ['lib/engine.mjs', 'follows every game', 'return [meta.home, meta.away].find(t => this.follow.has(t.abbr)) ?? null;', 'return meta.home;'],
   ['lib/hub.mjs', 'token expiry ignored', 'if (hit.tok.exp <= now) return null;', ''],
   ['lib/hub.mjs', 'token never renewed', 'if (hit.tok.exp - now < this.tokenTtlMs / 2) {', 'if (false) {'],
-  ['lib/hub.mjs', 'cue lookup crosses households', 'const c = rec.cues.get(cueId);', 'const c = [...this.households.values()].map(r => r.cues.get(cueId)).find(Boolean);'],
+  ['lib/hub.mjs', 'cue lookup crosses households', 'const c = rec.cues.get(cueId);\n    if (!c) throw', 'const c = [...this.households.values()].map(r => r.cues.get(cueId)).find(Boolean);\n    if (!c) throw'],
   ['lib/hub.mjs', 'unknown cue accepted', "if (!c) throw new HubError(404, 'unknown_cue');", ''],
   ['lib/hub.mjs', 'expired cue accepted', "if (now - c.ms > this.cueTtlMs) throw new HubError(410, 'expired');", ''],
   ['lib/hub.mjs', 'cue answered twice', "if (c.answered) throw new HubError(409, 'already_answered');", ''],

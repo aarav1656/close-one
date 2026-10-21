@@ -5,6 +5,10 @@
 // full 48 minute game). Leverage is the win probability at stake on the next
 // possession: the swing between the leader being 2 points ahead and 2 points
 // behind after one possession (14 s) has been played.
+//
+// This is a closed form random walk approximation (Stern, 1994), not a trained model. Against ESPN's per-play
+// win probability it is off by 0.075 on average over 595,022 plays (eval/results.json), which is accurate
+// enough to rank moments by how much is at stake and is checked by `npm run eval` on every figure it reports.
 
 export const GAME_SECS = 2880;
 export const SIGMA = 13.5;
