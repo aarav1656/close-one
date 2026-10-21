@@ -164,6 +164,16 @@ Severity: High = blocked the work or cost more than 30 minutes, Medium = needed 
 - Severity: Low.
 - Suggestion: edit only the rc file of the user's login shell, and print the line it added.
 
+## FL-017 Toast icon: a data URI is rejected, a package path is accepted and draws blank
+
+- Task: show the Clutch mark on the toast raised from the headless service.
+- Steps: `post()` with `iconUri` set in turn to a data URI, `file:///pkg/assets/...`, `pkg://`, a relative path, `asset://`, the amazon.com favicon over https, an https URL that returns 404, and `http://10.0.2.2:38787/assets/clutch-icon.png`.
+- Expected: an error for an icon the renderer cannot draw, or one documented icon form.
+- Actual: the data URI fails with `Bad Parameter Error`. Every package path form is accepted by `post()` and the renderer draws a blank icon slot. The https favicon draws. The https 404 draws blank. The cleartext dev server URL was never requested by the renderer. The icon source is not in the toast type comments.
+- Severity: Medium. The accepted-but-blank case looks like success, the same shape as FL-008.
+- Workaround: host the icon on the cue server and pass an https URL (`app/src/notify/toast.ts`); the toast text carries the message without it.
+- Suggestion: document the icon forms the renderer draws, and make `post()` reject the ones it cannot.
+
 ## Timings measured
 
 | Step | Time |
