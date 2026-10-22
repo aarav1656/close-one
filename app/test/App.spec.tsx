@@ -28,11 +28,11 @@ const showcase: api.Showcase = {
   ticks: [{t: 2520, label: '4th 6:00'}, {t: 2580, label: '5:00'}, {t: 2640, label: '4:00'}],
   series: Array.from({length: 96}, (_, i) => (i > 90 ? 0.45 : 0.1)),
   rule: [
-    {t: 2638, at: '4th 4:02', lev: 0.18, verdict: 'below', why: 'Within 5 points with under 5 minutes left. Clutch waits: only 18 points of win chance at stake, under the bar of 30.'},
-    {t: 2683, at: '4th 3:17', lev: 0.24, verdict: 'below', why: 'Within 5 points with under 5 minutes left. Clutch waits: only 24 points of win chance at stake, under the bar of 30.'},
+    {t: 2638, at: '4th 4:02', lev: 0.18, verdict: 'below', why: 'Within 5 points with under 5 minutes left. Close One waits: only 18 points of win chance at stake, under the bar of 30.'},
+    {t: 2683, at: '4th 3:17', lev: 0.24, verdict: 'below', why: 'Within 5 points with under 5 minutes left. Close One waits: only 24 points of win chance at stake, under the bar of 30.'},
   ],
   clutch: [{t: 2733, at: '4th 2:27', lev: 0.48, why: 'The next possession can move the win chance by 48 points, over the bar of 30. 2 simple alerts had already gone out.'}],
-  summary: 'The simple rule alerts 2 times. Clutch cues once, first at 4th 2:27 with 48 points of win chance on the next possession.',
+  summary: 'The simple rule alerts 2 times. Close One cues once, first at 4th 2:27 with 48 points of win chance on the next possession.',
 };
 
 let mounted: ReactTestRenderer.ReactTestRenderer | undefined;
@@ -42,7 +42,7 @@ const show = async (state: api.ServerState | Error) => {
   return mounted;
 };
 
-describe('Clutch app', () => {
+describe('Close One app', () => {
   beforeEach(() => {
     jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
     jest.spyOn(api, 'getTeams').mockResolvedValue(teams);
@@ -84,20 +84,20 @@ describe('Clutch app', () => {
     await press(r, '10 pm to 7 am');
     await press(r, 'Next');
     expect(asText(r)).toContain('STEP 3 OF 3');
-    expect(asText(r)).toContain('Until you do, Clutch sends nothing.');
+    expect(asText(r)).toContain('Until you do, Close One sends nothing.');
     expect(asText(r)).toContain('10 pm to 7 am');
     expect(settings).not.toHaveBeenCalled();
     await press(r, 'Turn cues on');
     await flush();
     expect(settings).toHaveBeenCalledWith({onboarded: true, enabled: true, quiet: {from: 22, to: 7}, offsetMin: -new Date().getTimezoneOffset()});
-    expect(asText(r)).toContain('CLUTCH');
+    expect(asText(r)).toContain('CLOSE ONE');
   });
 
   it('backing out of setup leaves cues off and offers setup from Home', async () => {
     const r = await show({...baseState, follow: [], settings: notOnboarded, games: []});
     await press(r, 'Back');
-    expect(asText(r)).toContain('Set up Clutch');
-    expect(controls(r).preferred).toEqual(['Set up Clutch']);
+    expect(asText(r)).toContain('Set up Close One');
+    expect(controls(r).preferred).toEqual(['Set up Close One']);
   });
 
   it('setup that cannot reach the server says so and does not leave setup', async () => {
@@ -134,14 +134,14 @@ describe('Clutch app', () => {
   });
 
   it('puts the card in front for an active cue, sends accept on Watch, and never shows a score', async () => {
-    const card = {id: 7, gameId: 'g1', title: 't', body: 'Coming down to the wire. 4th quarter, 3:12 left. Menu opens Clutch.', when: '4th quarter, 3:12 left', home: 'Spurs', away: 'Thunder', why: 'Close, and the next possession can move the win chance by 38 points.'};
+    const card = {id: 7, gameId: 'g1', title: 't', body: 'Coming down to the wire. 4th quarter, 3:12 left. Menu opens Close One.', when: '4th quarter, 3:12 left', home: 'Spurs', away: 'Thunder', why: 'Close, and the next possession can move the win chance by 38 points.'};
     const fb = jest.spyOn(api, 'sendFeedback').mockResolvedValue();
     const r = await show({...baseState, active: card});
     expect(asText(r)).toContain('COMING DOWN TO THE WIRE');
     expect(asText(r)).toContain('Thunder');
     expect(asText(r)).not.toMatch(/\d+-\d+/);
     expect(asText(r)).toContain('4th quarter, 3:12 left');
-    expect(asText(r)).not.toContain('Menu opens Clutch');
+    expect(asText(r)).not.toContain('Menu opens Close One');
     expect(asText(r)).toContain('Pressure on the next possession');
     await press(r, 'Watch');
     expect(fb).toHaveBeenCalledWith(7, 'accept');
@@ -178,7 +178,7 @@ describe('Clutch app', () => {
     const r = await show({...baseState, active: {id: 8, gameId: 'g1', title: 't', body: 'x', home: 'Spurs', away: 'Thunder'}});
     await press(r, 'Not now');
     expect(fb).toHaveBeenCalledWith(8, 'dismiss');
-    expect(asText(r)).toContain('CLUTCH');
+    expect(asText(r)).toContain('CLOSE ONE');
   });
 
   describe('states', () => {
@@ -186,7 +186,7 @@ describe('Clutch app', () => {
       jest.spyOn(api, 'getState').mockReturnValue(new Promise(() => undefined));
       const r = await mount(<App />);
       mounted = r;
-      expect(asText(r)).toContain('Connecting to Clutch');
+      expect(asText(r)).toContain('Connecting to Close One');
       expect(asText(r)).not.toContain('No data');
     });
 
@@ -364,8 +364,8 @@ describe('Clutch app', () => {
     await ReactTestRenderer.act(async () => input().props.onChangeText('https://clutch.example.com'));
     await press(r, 'Save and reconnect');
     await flush();
-    expect(asText(r)).toContain('CLUTCH');
-    expect(asText(r)).not.toContain('Where Clutch listens');
+    expect(asText(r)).toContain('CLOSE ONE');
+    expect(asText(r)).not.toContain('Where Close One listens');
   });
 
   describe('household switches', () => {
@@ -422,16 +422,16 @@ describe('Clutch app', () => {
   });
 
   describe('after the game', () => {
-    it('a finished game says what Clutch did: cues, answers, bar movement', async () => {
+    it('a finished game says what Close One did: cues, answers, bar movement', async () => {
       const summaries = [{gameId: 'g9', label: 'Thunder at Spurs', cues: 2, accepted: 1, dismissed: 1, waiting: 0, from: 0.3, to: 0.32}];
       const r = await show({...baseState, summaries});
       expect(asText(r)).toContain('Final, Thunder at Spurs');
-      expect(asText(r)).toContain('Clutch sent 2 cues: 1 watched, 1 not now. Bar 30 to 32.');
+      expect(asText(r)).toContain('Close One sent 2 cues: 1 watched, 1 not now. Bar 30 to 32.');
     });
 
-    it('a quiet game is reported as Clutch staying quiet', async () => {
+    it('a quiet game is reported as Close One staying quiet', async () => {
       const r = await show({...baseState, summaries: [{gameId: 'g9', label: 'Thunder at Spurs', cues: 0, accepted: 0, dismissed: 0, waiting: 0, from: 0.3, to: 0.3}]});
-      expect(asText(r)).toContain('Clutch stayed quiet. Nothing crossed your bar.');
+      expect(asText(r)).toContain('Close One stayed quiet. Nothing crossed your bar.');
     });
   });
 
@@ -446,11 +446,11 @@ describe('Clutch app', () => {
       expect(t).toContain(showcase.summary);
       const at = t.split('\n').filter(l => /^4th \d:\d\d$/.test(l) && l !== '4th 6:00'); // the first axis tick is not an alert
       expect(at).toEqual(['4th 4:02', '4th 3:17', '4th 2:27']);
-      expect(t).toContain('Simple rule alerts. Clutch waits: 18 points at stake, bar 30.');
-      expect(t).toContain('Clutch cues: 48 points on the next possession, over the bar of 30.');
+      expect(t).toContain('Simple rule alerts. Close One waits: 18 points at stake, bar 30.');
+      expect(t).toContain('Close One cues: 48 points on the next possession, over the bar of 30.');
       expect(t).toContain('Move through the alerts');
       await ReactTestRenderer.act(async () => {
-        r.root.findByProps({accessibilityLabel: '4th 4:02 Simple rule alerts. Clutch waits: 18 points at stake, bar 30.'}).props.onFocus();
+        r.root.findByProps({accessibilityLabel: '4th 4:02 Simple rule alerts. Close One waits: 18 points at stake, bar 30.'}).props.onFocus();
       });
       expect(asText(r)).toContain(showcase.rule[0].why);
     });

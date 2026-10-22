@@ -1,5 +1,5 @@
 #!/bin/bash
-# Point the app build at a Clutch server: scripts/set-server.sh https://clutch.example.com
+# Point the app build at a Close One server: scripts/set-server.sh https://clutch.example.com
 # Rewrites app/clutch.config.json (the address the app uses until a household changes it in Settings).
 set -eu
 URL=${1:-}

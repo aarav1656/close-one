@@ -34,7 +34,7 @@ export const Settings = ({settings, teamCount, teamNames, onToggleCues, onToggle
     <Text style={base.kicker}>SETTINGS</Text>
     <Text style={styles.title}>Your cues, your rules</Text>
     <View style={styles.list}>
-      <Row title="Cues" note={settings.enabled ? 'Clutch may interrupt for the games you follow.' : 'Off. No toast, from any game, until you turn it back on.'}>
+      <Row title="Cues" note={settings.enabled ? 'Close One may interrupt for the games you follow.' : 'Off. No toast, from any game, until you turn it back on.'}>
         <Button fill preferred compact label={settings.enabled ? 'Turn cues off' : 'Turn cues on'} onPress={onToggleCues} />
       </Row>
       <Row title="Tonight" note={settings.paused ? 'Paused. Cues come back tomorrow, or when you resume.' : 'One press silences every cue until tomorrow.'}>

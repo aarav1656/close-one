@@ -40,14 +40,14 @@ const GameRow = ({g, preferred, onOpen}: {g: GameView; preferred: boolean; onOpe
 
 const pts = (x: number) => Math.round(x * 100);
 
-/** What Clutch did in a finished game, in plain words, with where the bar went. */
+/** What Close One did in a finished game, in plain words, with where the bar went. */
 const SummaryLine = ({s}: {s: Summary}) => (
   <View style={styles.summary} accessibilityLabel={`Final: ${s.label}`}>
     <Text style={styles.summaryHead}>Final, {s.label}</Text>
     <Text style={base.detail}>
       {s.cues === 0
-        ? 'Clutch stayed quiet. Nothing crossed your bar.'
-        : `Clutch sent ${s.cues} cue${s.cues === 1 ? '' : 's'}: ${s.accepted} watched, ${s.dismissed} not now${s.waiting ? `, ${s.waiting} unanswered` : ''}. Bar ${pts(s.from)} to ${pts(s.to)}.`}
+        ? 'Close One stayed quiet. Nothing crossed your bar.'
+        : `Close One sent ${s.cues} cue${s.cues === 1 ? '' : 's'}: ${s.accepted} watched, ${s.dismissed} not now${s.waiting ? `, ${s.waiting} unanswered` : ''}. Bar ${pts(s.from)} to ${pts(s.to)}.`}
     </Text>
   </View>
 );
@@ -82,7 +82,7 @@ export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase,
 
   return (
     <View style={base.screen}>
-      <Text style={base.brand}>CLUTCH</Text>
+      <Text style={base.brand}>CLOSE ONE</Text>
       <Text style={base.sub}>{sub}</Text>
       {status.kind === 'offline' ? (
         <Banner
@@ -106,21 +106,21 @@ export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase,
         <View style={styles.left}>
           {status.kind === 'loading' ? (
             <>
-              <Text style={base.title}>Connecting to Clutch</Text>
+              <Text style={base.title}>Connecting to Close One</Text>
               <Text style={base.detail}>Pairing this TV with your household at {host}.</Text>
             </>
           ) : needsSetup ? (
             <>
-              <Text style={base.title}>Set up Clutch</Text>
-              <Text style={base.detail}>Pick your teams, choose quiet hours, then turn cues on. Until you do, Clutch sends nothing.</Text>
+              <Text style={base.title}>Set up Close One</Text>
+              <Text style={base.detail}>Pick your teams, choose quiet hours, then turn cues on. Until you do, Close One sends nothing.</Text>
               <View style={styles.pad}>
-                <Button preferred primary label="Set up Clutch" onPress={onSetup} />
+                <Button preferred primary label="Set up Close One" onPress={onSetup} />
               </View>
             </>
           ) : noTeams ? (
             <>
               <Text style={base.title}>Pick the teams you follow</Text>
-              <Text style={base.detail}>Clutch stays silent until you do. It only interrupts for games with your teams in them.</Text>
+              <Text style={base.detail}>Close One stays silent until you do. It only interrupts for games with your teams in them.</Text>
               <View style={styles.pad}>
                 <Button preferred={preferChoose} primary label="Choose teams" onPress={onTeams} />
               </View>
@@ -139,8 +139,8 @@ export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase,
                   <Text style={base.title}>{games.length === 0 ? 'No live games right now' : 'Your teams are not playing right now'}</Text>
                   <Text style={base.detail}>
                     {next
-                      ? `Next up: ${next.label} at ${clockTime(next.startsAt)}. Clutch cues you only when a game you follow gets tight.`
-                      : 'Nothing on the NBA schedule at the moment. Clutch keeps watching and wakes up when a game tips off.'}
+                      ? `Next up: ${next.label} at ${clockTime(next.startsAt)}. Close One cues you only when a game you follow gets tight.`
+                      : 'Nothing on the NBA schedule at the moment. Close One keeps watching and wakes up when a game tips off.'}
                   </Text>
                 </>
               )}
@@ -166,7 +166,7 @@ export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase,
                   ? 'No toast from any game until you turn cues back on in Settings.'
                   : silence === 'paused'
                   ? 'Every cue is silenced until tomorrow. Press Resume tonight to bring them back.'
-                  : `No cue during ${quietLabel(state?.settings.quiet ?? null)}. Clutch is watching and comes back after.`}
+                  : `No cue during ${quietLabel(state?.settings.quiet ?? null)}. Close One is watching and comes back after.`}
               </Text>
             </View>
           ) : quiet ? (
@@ -174,7 +174,7 @@ export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase,
               <Moon />
               <Text style={[base.title, styles.quietTitle]}>Quiet tonight</Text>
               <Text style={base.detail}>
-                You passed on three cues within an hour, so Clutch stays silent until tomorrow. You can still open any game from here.
+                You passed on three cues within an hour, so Close One stays silent until tomorrow. You can still open any game from here.
               </Text>
             </View>
           ) : state ? (

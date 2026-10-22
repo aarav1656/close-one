@@ -1,5 +1,5 @@
 #!/bin/bash
-# One spike run: Clutch starts its service, the video sample is brought to the front, the server sends N cues.
+# One spike run: Close One starts its service, the video sample is brought to the front, the server sends N cues.
 #   run.sh <template|bad> <n> <interval_ms> <tag>
 # Writes latencies-<tag>.csv and devlog-<tag>.txt next to this script.
 set -u

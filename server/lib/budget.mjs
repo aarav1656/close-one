@@ -75,8 +75,8 @@ export function tuneBase(tuned) {
 }
 
 /**
- * Equal budget: at the cue budget Clutch spends, the best within-m-points-in-the-last-t-minutes rule, chosen on the
- * tuning games (most late-decided games caught, then fewest cues, never more cues than Clutch), scored on both halves.
+ * Equal budget: at the cue budget Close One spends, the best within-m-points-in-the-last-t-minutes rule, chosen on the
+ * tuning games (most late-decided games caught, then fewest cues, never more cues than Close One), scored on both halves.
  */
 export function equalBudget(tuned, reported, lead) {
   const clutchTune = score(tuned, g => modelOf(g, DEFAULTS.base), lead);

@@ -74,7 +74,7 @@ test('the bar chosen on the early games alone is the shipped default of 30', () 
   assert.equal(hb.tunedBase, 0.3);
 });
 
-test('games from Jan 15 on: Clutch 0.48 cues per game against 0.71, silent in 431 of 632, 100 of 104 late-decided caught against 102', () => {
+test('games from Jan 15 on: Close One 0.48 cues per game against 0.71, silent in 431 of 632, 100 of 104 late-decided caught against 102', () => {
   assert.equal(hb.report.clutch.games, 632);
   assert.equal(hb.report.clutch.late, 104);
   assert.equal(hb.report.clutch.caught, 100);
@@ -85,7 +85,7 @@ test('games from Jan 15 on: Clutch 0.48 cues per game against 0.71, silent in 43
   assert.ok(hb.report.clutch.cuesPerGame < 0.7 * hb.report.baseline.cuesPerGame, 'at least 30% fewer cues');
 });
 
-test('equal budget with two minutes to switch: Clutch catches 97 of 104, the best simple rule tuned on the early games 93', () => {
+test('equal budget with two minutes to switch: Close One catches 97 of 104, the best simple rule tuned on the early games 93', () => {
   const at = lead => hb.equalBudget.find(e => e.lead === lead);
   assert.deepEqual(at(120).rule, {margin: 3, minutes: 3});
   assert.equal(at(120).report.clutch.caught, 97);
@@ -95,7 +95,7 @@ test('equal budget with two minutes to switch: Clutch catches 97 of 104, the bes
   assert.equal(at(120).tune.clutch.caught, 138);
   assert.equal(at(120).tune.simple.caught, 132);
   for (const e of hb.equalBudget) {
-    assert.ok(e.tune.simple.cuesPerGame <= e.tune.clutch.cuesPerGame + 1e-9, `lead ${e.lead}: the rule never spends more than Clutch on the games it was tuned on`);
+    assert.ok(e.tune.simple.cuesPerGame <= e.tune.clutch.cuesPerGame + 1e-9, `lead ${e.lead}: the rule never spends more than Close One on the games it was tuned on`);
   }
 });
 

@@ -27,7 +27,7 @@ export const TurnOn = ({teams, quiet, saving, failed, onTurnOn, onBack}: Props) 
   <View style={base.screen}>
     <Text style={base.kicker}>STEP 3 OF 3</Text>
     <Text style={base.hero}>Turn cues on</Text>
-    <Text style={base.sub}>Until you do, Clutch sends nothing.</Text>
+    <Text style={base.sub}>Until you do, Close One sends nothing.</Text>
     <View style={styles.facts}>
       <Fact k="Your teams" v={teams.length ? teams.join(', ') : 'None picked yet'} />
       <Fact k="Quiet hours" v={quietLabel(quiet)} />

@@ -94,7 +94,7 @@ describe('clockTime', () => {
 });
 
 describe('toast', () => {
-  it('draws its icon from the Clutch server, never a third party', () => {
+  it('draws its icon from the Close One server, never a third party', () => {
     expect(iconUrl('http://10.0.2.2:38787')).toBe('http://10.0.2.2:38787/assets/clutch-icon.png');
     const t = cueToast('title', 'body', iconUrl('https://clutch.example.com'));
     expect(t.mIconUri).toBe('https://clutch.example.com/assets/clutch-icon.png');

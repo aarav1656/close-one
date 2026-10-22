@@ -1,6 +1,6 @@
 # Friction log
 
-Product feedback for the Vega SDK, Vega Virtual Device (VVD), the Amazon Devices Builder Tools MCP and the sample apps, written while building Clutch. Environment for every entry: macOS 26.4.1 on Apple Silicon (arm64), Node v24.9.0, Vega CLI 1.4.5, Vega SDK 0.24.12112, React Native for Vega 0.83. Date of all entries: 2026-10-21.
+Product feedback for the Vega SDK, Vega Virtual Device (VVD), the Amazon Devices Builder Tools MCP and the sample apps, written while building Close One. Environment for every entry: macOS 26.4.1 on Apple Silicon (arm64), Node v24.9.0, Vega CLI 1.4.5, Vega SDK 0.24.12112, React Native for Vega 0.83. Date of all entries: 2026-10-21.
 
 Severity: High = blocked the work or cost more than 30 minutes, Medium = needed a workaround, Low = papercut.
 
@@ -87,7 +87,7 @@ Severity: High = blocked the work or cost more than 30 minutes, Medium = needed 
 
 ## FL-008 Toast from a headless service: only a hook is documented, and a wrong channel name fails silently
 
-- Task: show a system toast over another app from a background service (the core mechanism of Clutch).
+- Task: show a system toast over another app from a background service (the core mechanism of Close One).
 - Steps: read the toast pages; the only documented API is the React hook `useToastKepler`, which a headless service has no React tree to call. Import `NativeNotificationManager` and `NotificationManagerUtils` from `@amazon-devices/react-native-kepler/Libraries/Components/ToastKepler/` and call `post()` with the content the hook builds.
 - Expected: a documented non-hook route, and an error for a bad channel.
 - Actual: `post()` resolves with `{"bytes":[...16 numbers]}` for every channel name. With `name: 'NotATemplateName'` nothing is drawn and no error is logged; with `name: 'MenuToastRenderTemplate'` the renderer claims input (`Client Requesting Priority 224: SYSTEMUI_PRIORITY`) and releases it 8 s later. Measured here: 20 of 20 sends with the template name, 0 of 20 with the other name (`spikes/toast/`). The channel `name` field is the render template selector, which the type comments do not say. First reported by github.com/rogerjeasy/wick (FL-022 in their log); reproduced here.
@@ -166,7 +166,7 @@ Severity: High = blocked the work or cost more than 30 minutes, Medium = needed 
 
 ## FL-017 Toast icon: a data URI is rejected, a package path is accepted and draws blank
 
-- Task: show the Clutch mark on the toast raised from the headless service.
+- Task: show the Close One mark on the toast raised from the headless service.
 - Steps: `post()` with `iconUri` set in turn to a data URI, `file:///pkg/assets/...`, `pkg://`, a relative path, `asset://`, the amazon.com favicon over https, an https URL that returns 404, and `http://10.0.2.2:38787/assets/clutch-icon.png`.
 - Expected: an error for an icon the renderer cannot draw, or one documented icon form.
 - Actual: the data URI fails with `Bad Parameter Error`. Every package path form is accepted by `post()` and the renderer draws a blank icon slot. The https favicon draws. The https 404 draws blank. The cleartext dev server URL was never requested by the renderer. The icon source is not in the toast type comments.
@@ -183,4 +183,4 @@ Severity: High = blocked the work or cost more than 30 minutes, Medium = needed 
 | `vega virtual-device start` to `Virtual device ready.` | about 45 s |
 | vega-video-sample: `npm install` | 2 min |
 | vega-video-sample: Shaka compile | about 3 min |
-| Clutch `npm install` | 42 s |
+| Close One `npm install` | 42 s |

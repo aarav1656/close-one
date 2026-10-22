@@ -46,7 +46,7 @@ export const LearningBar = ({learning}: {learning: ServerState['learning']}) => 
       </View>
       {moved ? <Text style={styles.note}>Started at {pts(learning.base)}. It moves with how you answer.</Text> : null}
       {learning.cues.length === 0 ? (
-        <Text style={styles.note}>No cues yet tonight. Clutch speaks up when a possession can swing a game past the bar.</Text>
+        <Text style={styles.note}>No cues yet tonight. Close One speaks up when a possession can swing a game past the bar.</Text>
       ) : (
         learning.cues.map(c => (
           <View key={c.cueId} style={styles.line}>

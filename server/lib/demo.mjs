@@ -1,6 +1,6 @@
 // Demo day. With `node live.mjs --demo` the server also answers two loopback-only calls that drive a finished game
 // through the real pipeline: /demo/prepare puts every paired household on a clean night following the game's teams,
-// /demo/ping measures the TV's clock offset and /demo/status says how many TVs are connected and how many cues the service acked as posted. /demo/cue plays the game up to the moment Clutch speaks, so a recording reaches a real toast on a real
+// /demo/ping measures the TV's clock offset and /demo/status says how many TVs are connected and how many cues the service acked as posted. /demo/cue plays the game up to the moment Close One speaks, so a recording reaches a real toast on a real
 // authenticated socket without waiting for a live game, and /demo/final ends the game so the summary shows.
 import {secsLeft} from './model.mjs';
 import {compare, elapsed} from './showcase.mjs';
@@ -11,7 +11,7 @@ export function createDemo(hub, game) {
   const meta = {home: {...game.home, short: game.home.short}, away: {...game.away, short: game.away.short}};
   const teams = [game.home.abbr, game.away.abbr];
   const cueAt = compare(game).clutch[0];
-  if (!cueAt) throw new Error('the demo game has no Clutch cue');
+  if (!cueAt) throw new Error('the demo game has no Close One cue');
   const row = game.plays.find(r => elapsed(r.p, r.c) === cueAt.t);
   const reply = (res, code, obj) => {
     res.statusCode = code;

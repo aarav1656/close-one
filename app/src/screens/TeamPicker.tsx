@@ -51,7 +51,7 @@ export const TeamPicker = ({step, doneLabel, initial, onSave, onBack}: Props) =>
     <View style={[base.screen, styles.screen]}>
       <Text style={base.kicker}>{step ?? 'YOUR TEAMS'}</Text>
       <Text style={styles.title}>Pick the teams you follow</Text>
-      <Text style={base.detail}>Clutch interrupts only for games with these teams in them.</Text>
+      <Text style={base.detail}>Close One interrupts only for games with these teams in them.</Text>
       {failed ? (
         <View style={styles.fail}>
           <Text style={base.sub}>Could not load the team list. Check the server connection.</Text>

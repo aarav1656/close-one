@@ -1,5 +1,5 @@
 // "Same game, two rules": one finished game replayed play by play through the simple rule
-// ("within 5 in the last 5 minutes") and through Clutch's decision, every alert placed on the game clock
+// ("within 5 in the last 5 minutes") and through Close One's decision, every alert placed on the game clock
 // with the one-line reason it fired or stayed quiet.
 import {readFileSync} from 'node:fs';
 import {secsLeft, leverage, decide, simpleRuleHolds, MIN_SECS_LEFT, REARM_FRACTION} from './model.mjs';
@@ -43,8 +43,8 @@ export function compare(game, {base = DEFAULTS.base, cap = DEFAULTS.cap} = {}) {
         verdict,
         why:
           verdict === 'cue'
-            ? 'Within 5 points with under 5 minutes left. Clutch speaks up here too.'
-            : `Within 5 points with under 5 minutes left. Clutch waits: ${QUIET[verdict](r.lev, base)}`,
+            ? 'Within 5 points with under 5 minutes left. Close One speaks up here too.'
+            : `Within 5 points with under 5 minutes left. Close One waits: ${QUIET[verdict](r.lev, base)}`,
       });
     }
     inside = holds;
@@ -87,7 +87,7 @@ export function compare(game, {base = DEFAULTS.base, cap = DEFAULTS.cap} = {}) {
     rule,
     clutch,
     summary: `The simple rule alerts ${rule.length} time${rule.length === 1 ? '' : 's'}. ${
-      clutch.length === 0 ? 'Clutch stays silent.' : `Clutch cues ${clutch.length === 1 ? 'once' : `${clutch.length} times`}, first at ${clutch[0].at} with ${points(clutch[0].lev)} points of win chance on the next possession.`
+      clutch.length === 0 ? 'Close One stays silent.' : `Close One cues ${clutch.length === 1 ? 'once' : `${clutch.length} times`}, first at ${clutch[0].at} with ${points(clutch[0].lev)} points of win chance on the next possession.`
     }`,
   };
 }

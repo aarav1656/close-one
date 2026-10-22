@@ -12,10 +12,10 @@ type Pick = {kind: 'rule' | 'clutch'; index: number};
 
 const shortLine = (kind: Pick['kind'], a: Alert, bar: number): string =>
   kind === 'clutch'
-    ? `Clutch cues: ${pts(a.lev)} points on the next possession, over the bar of ${pts(bar)}.`
+    ? `Close One cues: ${pts(a.lev)} points on the next possession, over the bar of ${pts(bar)}.`
     : a.verdict === 'cue'
-    ? 'Simple rule alerts. Clutch cues too.'
-    : `Simple rule alerts. Clutch waits: ${pts(a.lev)} points at stake, bar ${pts(bar)}.`;
+    ? 'Simple rule alerts. Close One cues too.'
+    : `Simple rule alerts. Close One waits: ${pts(a.lev)} points at stake, bar ${pts(bar)}.`;
 
 const Row = ({label, line, onFocus, selected}: {label: string; line: string; onFocus: () => void; selected: boolean}) => {
   const [focused, setFocused] = useState(false);

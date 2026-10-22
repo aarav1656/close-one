@@ -15,11 +15,11 @@ interface Props {
   onBack: () => void;
 }
 
-/** Hours when Clutch never interrupts, in the household's own time. */
+/** Hours when Close One never interrupts, in the household's own time. */
 export const QuietHours = ({step, value, onChange, nextLabel, onNext, onBack}: Props) => (
   <View style={base.screen}>
     <Text style={base.kicker}>{step ?? 'QUIET HOURS'}</Text>
-    <Text style={styles.title}>When should Clutch stay out of it?</Text>
+    <Text style={styles.title}>When should Close One stay out of it?</Text>
     <Text style={base.sub}>No cue is sent during quiet hours, whatever the score.</Text>
     <View style={styles.grid}>
       {QUIET_PRESETS.map(p => (

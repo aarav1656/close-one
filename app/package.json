@@ -1,5 +1,5 @@
 {
-  "name": "clutch-vega",
+  "name": "close-one-vega",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -44,7 +44,7 @@
   },
   "kepler": {
     "projectType": "application",
-    "appName": "Clutch",
+    "appName": "Close One",
     "targets": [
       "tv"
     ],

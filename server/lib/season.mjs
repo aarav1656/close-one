@@ -1,4 +1,4 @@
-// The season evaluation: Clutch's decision function against the simple "within 5 in the last 5 minutes"
+// The season evaluation: Close One's decision function against the simple "within 5 in the last 5 minutes"
 // rule over every cached completed game, with controls. Pure: games in, figures out.
 import {readdirSync, readFileSync} from 'node:fs';
 import {rows, modelCues, ruleCues, decidedLate, finalMargin} from './replay.mjs';
@@ -103,7 +103,7 @@ export function runEval(all) {
 }
 
 /**
- * The result a reader should trust most: the bar is chosen on games before TUNE_BEFORE, and Clutch, the
+ * The result a reader should trust most: the bar is chosen on games before TUNE_BEFORE, and Close One, the
  * within-5-in-5 baseline and the equal-budget rule are all scored on the games from that date on.
  */
 function heldBack(all) {

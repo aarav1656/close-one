@@ -22,7 +22,7 @@ export const Timeline = ({data, selected}: {data: Showcase; selected: {kind: 'ru
   const x = (t: number) => ((t - data.from) / (data.total - data.from)) * W;
   const col = W / data.series.length;
   return (
-    <View accessibilityLabel={`${data.label}: ${data.rule.length} simple alerts, ${data.clutch.length} Clutch cues`}>
+    <View accessibilityLabel={`${data.label}: ${data.rule.length} simple alerts, ${data.clutch.length} Close One cues`}>
       <View style={styles.chartRow}>
         <View style={styles.yAxis}>
           <Text style={styles.axisText}>Pressure</Text>
@@ -45,7 +45,7 @@ export const Timeline = ({data, selected}: {data: Showcase; selected: {kind: 'ru
       </View>
       {(['rule', 'clutch'] as const).map(kind => (
         <View key={kind} style={styles.lane}>
-          <Text style={styles.laneLabel}>{kind === 'rule' ? 'Simple rule' : 'Clutch'}</Text>
+          <Text style={styles.laneLabel}>{kind === 'rule' ? 'Simple rule' : 'Close One'}</Text>
           <View style={styles.laneTrack}>
             {(kind === 'rule' ? data.rule : data.clutch).map((a: Alert, i) => (
               <View key={a.t} style={[styles.markWrap, {left: space(x(a.t) - 17)}]}>

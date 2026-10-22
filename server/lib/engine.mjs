@@ -12,7 +12,7 @@ const points = x => Math.round(x * 100);
 export function whyNow({period, clock, lev, threshold, base, cuesLeft}) {
   const parts = [
     `${periodLabel(period)}, ${clockLabel(clock)} left, and the game is close enough that the next possession can move the win chance by ${points(lev)} points.`,
-    `Your bar is ${points(threshold)}, so Clutch spoke up.`,
+    `Your bar is ${points(threshold)}, so Close One spoke up.`,
   ];
   if (points(threshold) !== points(base)) parts.push(`It started at ${points(base)} and has moved with how you answered earlier cues.`);
   parts.push(cuesLeft > 0 ? `${cuesLeft} more interruption${cuesLeft === 1 ? '' : 's'} allowed tonight.` : 'That was the last interruption allowed tonight.');
@@ -63,7 +63,7 @@ export class Engine {
         // Short on purpose: the toast is a title line and two lines of body, with no icon beside it.
         title: `${nick(meta.away)} at ${nick(meta.home)}`,
         when: `${periodLabel(row.p)}, ${clockLabel(row.c)} left`,
-        body: `Coming down to the wire. ${periodLabel(row.p)}, ${clockLabel(row.c)} left. Menu opens Clutch.`,
+        body: `Coming down to the wire. ${periodLabel(row.p)}, ${clockLabel(row.c)} left. Menu opens Close One.`,
         lev,
         threshold,
         period: row.p,

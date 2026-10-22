@@ -27,8 +27,8 @@ export const ServerSettings = ({current, defaultUrl, onSave, onReset, onBack}: P
   return (
     <View style={base.screen}>
       <Text style={base.kicker}>SERVER</Text>
-      <Text style={base.hero}>Where Clutch listens</Text>
-      <Text style={base.sub}>The address of the Clutch server for your household. Changing it pairs this TV again.</Text>
+      <Text style={base.hero}>Where Close One listens</Text>
+      <Text style={base.sub}>The address of the Close One server for your household. Changing it pairs this TV again.</Text>
       <TextInput
         accessibilityLabel="Server address"
         value={text}

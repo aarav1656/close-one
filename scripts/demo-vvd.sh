@@ -1,5 +1,5 @@
 #!/bin/bash
-# Demo day on the Vega Virtual Device: a title plays in the video sample, Clutch's service is connected with its
+# Demo day on the Vega Virtual Device: a title plays in the video sample, Close One's service is connected with its
 # device token, one cue goes through the real pipeline, and the toast is captured over the playing video with the
 # send, receive, post and render times of the cue.
 #
@@ -34,13 +34,13 @@ if ! curl -sf "$SERVER/health" >/dev/null; then
 fi
 prep=$(curl -s -XPOST "$SERVER/demo/prepare") || fail "no answer from $SERVER/demo/prepare"
 echo "$prep" | grep -q '"ok":true' || fail "demo routes are off or not local: restart the server with --demo ($prep)"
-echo "$prep" | grep -q '"households":0' && fail "no TV has paired yet: launch Clutch once, then run this again"
+echo "$prep" | grep -q '"households":0' && fail "no TV has paired yet: launch Close One once, then run this again"
 
 (timeout 300 vega device start-log-stream > "$LOG" 2>&1 &)
 sleep 3
 vega device terminate-app --appName com.clutch.tv.main >/dev/null 2>&1
 vega device terminate-app --appName com.amazondeveloper.keplervideoapp.main >/dev/null 2>&1
-vega device launch-app --appName com.clutch.tv.main >/dev/null 2>&1 || fail "Clutch is not installed on the VVD"
+vega device launch-app --appName com.clutch.tv.main >/dev/null 2>&1 || fail "Close One is not installed on the VVD"
 for i in $(seq 1 40); do [ "$(num "$(status)" devices)" -ge 1 ] && break; sleep 1; done
 [ "$(num "$(status)" devices)" -ge 1 ] || fail "the cue service never connected to the server with its token"
 

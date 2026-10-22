@@ -71,7 +71,7 @@ attachWs(server, hub, {
     if (m.type === 'posted') logTo('toasts', 'iso,cue_id,send_to_posted_ms,household', [new Date().toISOString(), m.id, Date.now() - (rec.cues.get(m.id)?.ms ?? Date.now()), rec.id]);
   },
 });
-server.listen(PORT, '0.0.0.0', () => console.log(`clutch server :${PORT} data=${dataDir} households=${hub.households.size} cap=${hub.cap} base=${hub.base}${REPLAY ? ` replay=${REPLAY}x${SPEED}` : ''}`));
+server.listen(PORT, '0.0.0.0', () => console.log(`close one server :${PORT} data=${dataDir} households=${hub.households.size} cap=${hub.cap} base=${hub.base}${REPLAY ? ` replay=${REPLAY}x${SPEED}` : ''}`));
 
 // One row per finished game: how it ended and when its last lead change happened, to set against the cue wallclock.
 async function finalRow(id) {
