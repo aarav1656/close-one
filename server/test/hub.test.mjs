@@ -151,6 +151,34 @@ test('the learning bar state lists tonight cues with how each was answered', asy
   await s.close();
 });
 
+test('learning shifts say what the household taught Close One, in its own answers', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  await s.call('PUT', '/api/follow', {token, body: {teams: ['NY']}});
+  assert.deepEqual((await s.call('GET', '/api/state', {token})).json.learning.shifts, [], 'a fresh household has taught nothing');
+  s.hub.ingest('g1', game, tied, s.clock.t);
+  s.hub.ingest('g2', {home: NY, away: {abbr: 'BOS', short: 'Celtics'}}, tied, s.clock.t + 1000);
+  assert.equal(s.sent.length, 2);
+  for (const [, cueId] of s.sent) assert.equal((await s.call('POST', '/api/feedback', {token, body: {cueId, action: 'accept'}})).status, 200);
+  const {shifts} = (await s.call('GET', '/api/state', {token})).json.learning;
+  assert.deepEqual(shifts, [{team: 'Knicks', bar: 0.24, base: 0.3, watched: 2, notNow: 0}]);
+  await s.close();
+});
+
+test('learning shifts list the biggest move first and at most two teams', async () => {
+  const s = await boot();
+  const {token} = await s.pair();
+  await s.call('PUT', '/api/follow', {token, body: {teams: ['NY', 'BOS', 'PHI']}});
+  const h = [...s.hub.households.values()][0].household;
+  h.feedback({cueId: 1, team: 'NY', ms: s.clock.t, action: 'accept'});
+  h.feedback({cueId: 2, team: 'BOS', ms: s.clock.t, action: 'dismiss'});
+  h.feedback({cueId: 3, team: 'BOS', ms: s.clock.t, action: 'dismiss'});
+  h.feedback({cueId: 4, team: 'PHI', ms: s.clock.t, action: 'dismiss'});
+  const {shifts} = (await s.call('GET', '/api/state', {token})).json.learning;
+  assert.deepEqual(shifts.map(x => [x.team, x.bar, x.notNow]), [['Celtics', 0.4, 2], ['76ers', 0.35, 1]]);
+  await s.close();
+});
+
 test('households, followed teams and tokens survive a restart', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'clutch-hub-'));
   const s1 = await boot({dir});

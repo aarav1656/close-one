@@ -36,6 +36,13 @@ const mutations = [
   ['src/screens/Settings.tsx', 'off switch label never flips', "settings.enabled ? 'Turn cues off' : 'Turn cues on'", "'Turn cues off'"],
   ['src/ui/WhyBar.tsx', 'cues left never shown', "cuesLeft > 0 ? `${cuesLeft} of ${cap} cues left tonight after this one.` : `That was the last of ${cap} cues tonight.`", "''"],
   ['src/ui/WhyBar.tsx', 'bar shown at the starting value', 'style={[styles.barTick, {left: space(x(threshold))}]}', 'style={[styles.barTick, {left: space(x(0.3))}]}'],
+  ['src/ui/WhyBar.tsx', 'labels back in a space-between row', `<View style={[styles.labels, {height: space(LINE + barTop)}]}>
+        <Text style={[styles.figure, styles.at, {left: space(levLeft), top: 0}]}>Pressure {pts(lev)}</Text>
+        <Text style={[styles.figure, styles.at, {left: space(barLeft), top: space(barTop)}]}>Your bar {pts(threshold)}</Text>`, `<View style={{flexDirection: 'row', justifyContent: 'space-between', width: space(W)}}>
+        <Text style={[styles.figure]}>Pressure {pts(lev)}</Text>
+        <Text style={[styles.figure]}>Your bar {pts(threshold)}</Text>`],
+  ['src/screens/Home.tsx', 'household lesson never shown', '{(state.learning.shifts ?? []).map(sh => (', '{([] as Shift[]).map(sh => ('],
+  ['src/screens/Home.tsx', 'a raised bar reads as down', "s.bar < s.base ? 'down' : 'up'", "'down'"],
   ['src/headless/CueService.ts', 'hello without token', "send({type: 'hello', token, deviceMs: Date.now()});", "send({type: 'hello', deviceMs: Date.now()});"],
   ['src/headless/CueService.ts', 'no retry after close', 'later();\n  };\n}', '};\n}'],
 ];

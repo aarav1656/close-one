@@ -19,6 +19,8 @@ const mutations = [
   ['lib/hub.mjs', 'expired cue accepted', "if (now - c.ms > this.cueTtlMs) throw new HubError(410, 'expired');", ''],
   ['lib/hub.mjs', 'cue answered twice', "if (c.answered) throw new HubError(409, 'already_answered');", ''],
   ['lib/hub.mjs', 'team list unchecked', '|| !teams.every(t => TEAM_ABBRS.has(t))', ''],
+  ['lib/hub.mjs', 'learning shifts list teams that never moved', '.filter(t => t.bar !== h.o.base)', ''],
+  ['lib/hub.mjs', 'learning shifts smallest move first', '.sort((a, b) => Math.abs(b.bar - b.base) - Math.abs(a.bar - a.base))', '.sort((a, b) => Math.abs(a.bar - a.base) - Math.abs(b.bar - b.base))'],
   ['lib/api.mjs', 'http auth gate off', "if (!rec) throw new HubError(401, 'unauthorized');", ''],
   ['lib/api.mjs', 'socket hello unchecked', "if (!rec) return ws.close(4401, 'unauthorized');", ''],
   ['lib/api.mjs', 'icon route missing', "route === 'GET /assets/clutch-icon.png'", "route === 'GET /assets/none.png'"],

@@ -4,7 +4,7 @@ import {Button} from '../ui/Button';
 import {Pressure} from '../ui/Pressure';
 import {Banner} from '../ui/Banner';
 import {LearningBar} from '../ui/LearningBar';
-import {GameView, ServerState, Summary, periodLabel, clockLabel, clockTime} from '../api';
+import {GameView, ServerState, Shift, Summary, periodLabel, clockLabel, clockTime} from '../api';
 import {quietLabel} from '../quiet';
 import {FeedStatus} from '../status';
 import {color, type, space} from '../theme';
@@ -51,6 +51,12 @@ const SummaryLine = ({s}: {s: Summary}) => (
     </Text>
   </View>
 );
+
+/** "Knicks: bar 24, down from 30 after 2 watched." The household's answers, read back as what they changed. */
+export const shiftLine = (s: Shift) => {
+  const why = [s.watched ? `${s.watched} watched` : '', s.notNow ? `${s.notNow} not now` : ''].filter(Boolean).join(' and ');
+  return `${s.team}: bar ${pts(s.bar)}, ${s.bar < s.base ? 'down' : 'up'} from ${pts(s.base)}${why ? ` after ${why}` : ''}.`;
+};
 
 export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase, onSettings, onSetup}: Props) => {
   const games = state?.games ?? [];
@@ -181,6 +187,11 @@ export const Home = ({state, status, host, onOpen, onTeams, onPause, onShowcase,
             <>
               <Text style={base.label}>Your bar tonight</Text>
               <LearningBar learning={state.learning} />
+              {(state.learning.shifts ?? []).map(sh => (
+                <Text key={sh.team} style={styles.shift}>
+                  {shiftLine(sh)}
+                </Text>
+              ))}
             </>
           ) : null}
         </View>
@@ -214,4 +225,5 @@ const styles = StyleSheet.create({
   moon: {width: space(96), height: space(96), borderRadius: space(48), backgroundColor: color.amber, overflow: 'hidden'},
   moonBite: {position: 'absolute', left: space(30), top: -space(8), width: space(88), height: space(88), borderRadius: space(44), backgroundColor: color.canvas},
   quietTitle: {marginTop: space(24)},
+  shift: {color: color.text, fontSize: type.label, fontWeight: '700', marginTop: space(18)},
 });

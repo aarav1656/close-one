@@ -255,8 +255,23 @@ export class Hub {
         max: h.o.max,
         threshold: thresholds.length ? Math.min(...thresholds) : h.o.base,
         cues: h.tonight(now).map(({cueId, team, lev, threshold, action, after, period, clock}) => ({cueId, team, lev, threshold, action, after, period, clock})),
+        shifts: this.#shifts(rec, now),
       },
     };
+  }
+
+  /** What the household taught Close One: each followed team whose bar has moved off the start, with the answers that moved it, biggest move first. */
+  #shifts(rec, now) {
+    const h = rec.household;
+    return [...rec.follow]
+      .map(team => ({team, bar: +h.threshold(team, now).toFixed(2)}))
+      .filter(t => t.bar !== h.o.base)
+      .map(({team, bar}) => {
+        const ev = h.events.filter(e => e.team === team);
+        return {team: nick({abbr: team, short: team}), bar, base: h.o.base, watched: ev.filter(e => e.action === 'accept').length, notNow: ev.filter(e => e.action === 'dismiss').length};
+      })
+      .sort((a, b) => Math.abs(b.bar - b.base) - Math.abs(a.bar - a.base))
+      .slice(0, 2);
   }
 
   /** One line per finished game the household followed: cues sent, how they were answered, where the bar went. */

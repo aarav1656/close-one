@@ -6,6 +6,7 @@ import {CUE_SERVICE_URI} from '../src/config';
 import * as api from '../src/api';
 import {asText, baseState, controls, flush, game, mount, press} from './helpers';
 import {color, space} from '../src/theme';
+import {LABEL_W} from '../src/ui/WhyBar';
 
 jest.mock('@amazon-devices/react-native-async-storage__async-storage', () =>
   require('@amazon-devices/react-native-async-storage__async-storage/jest/async-storage-mock'),
@@ -165,6 +166,20 @@ describe('Close One app', () => {
     expect(asText(r)).not.toContain(why);
   });
 
+  it('Why this cue? puts each label over its own mark and drops the bar label a line when they would collide', async () => {
+    const whyData = {lev: 0.48, threshold: 0.3, base: 0.3, cap: 2, cuesLeft: 1};
+    const r = await show({...baseState, active: {id: 9, gameId: 'g1', title: 't', body: 'x', home: 'Spurs', away: 'Thunder', why: 'w', whyData}});
+    await press(r, 'Why this cue?');
+    const label = (start: string) =>
+      r.root.find(n => (n.type as unknown) === 'Text' && ([] as unknown[]).concat(n.props.children).join('').startsWith(start)).props.style.reduce((a: object, b: object) => ({...a, ...b}), {});
+    const tick = r.root.find(n => typeof n.type === 'string' && Array.isArray(n.props.style) && n.props.style[0]?.position === 'absolute' && n.props.style[0]?.backgroundColor === color.text).props.style[1];
+    const bar = label('Your bar');
+    const pressure = label('Pressure ');
+    expect(Math.abs(bar.left - tick.left)).toBeLessThan(space(LABEL_W));
+    expect(bar.left).toBeLessThan(pressure.left);
+    expect(bar.top).toBeGreaterThan(pressure.top);
+  });
+
   it('the last cue of the night says so', async () => {
     const r = await show({...baseState, active: {id: 9, gameId: 'g1', title: 't', body: 'x', home: 'Spurs', away: 'Thunder', why: 'w', whyData: {lev: 0.5, threshold: 0.35, base: 0.3, cap: 2, cuesLeft: 0}}});
     await press(r, 'Why this cue?');
@@ -274,6 +289,22 @@ describe('Close One app', () => {
       expect(lefts).toEqual([space((0.45 / 0.6) * 760)]);
       const grey = r.root.findAll(n => typeof n.type === 'string' && Array.isArray(n.props.style) && n.props.style[0]?.position === 'absolute' && n.props.style[0]?.backgroundColor === color.muted);
       expect(grey.map(n => n.props.style[1].left)).toEqual([space((0.3 / 0.6) * 760)]);
+    });
+
+    it('says in plain words what the household taught it, and nothing when it has taught nothing', async () => {
+      const shifts = [{team: 'Knicks', bar: 0.24, base: 0.3, watched: 2, notNow: 0}];
+      const r = await show({...baseState, learning: {...baseState.learning, threshold: 0.24, shifts}});
+      expect(asText(r)).toContain('Knicks: bar 24, down from 30 after 2 watched.');
+      await ReactTestRenderer.act(async () => mounted?.unmount());
+      const quiet = await show({...baseState, learning: {...baseState.learning, shifts: []}});
+      expect(asText(quiet)).not.toContain('down from');
+      expect(asText(quiet)).not.toContain('up from');
+    });
+
+    it('a team pushed up by Not now reads as up, with both kinds of answer', async () => {
+      const shifts = [{team: 'Celtics', bar: 0.37, base: 0.3, watched: 1, notNow: 2}];
+      const r = await show({...baseState, learning: {...baseState.learning, shifts}});
+      expect(asText(r)).toContain('Celtics: bar 37, up from 30 after 1 watched and 2 not now.');
     });
 
     it('says what a quiet start means when no cue has fired', async () => {

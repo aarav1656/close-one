@@ -95,7 +95,16 @@ export interface ServerState {
   games: GameView[];
   upcoming: {label: string; startsAt: string}[];
   feed: {ok: boolean; ageMs: number | null};
-  learning: {base: number; min: number; max: number; threshold: number; cues: CueMark[]};
+  learning: {base: number; min: number; max: number; threshold: number; cues: CueMark[]; shifts?: Shift[]};
+}
+
+/** A followed team whose bar the household's own answers have moved off the start. */
+export interface Shift {
+  team: string;
+  bar: number;
+  base: number;
+  watched: number;
+  notNow: number;
 }
 
 export class ApiError extends Error {
