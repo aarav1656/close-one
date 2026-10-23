@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   axisText: {color: color.muted, fontSize: type.label},
   chart: {borderBottomWidth: space(3), borderBottomColor: color.line},
   col: {position: 'absolute', bottom: 0, borderTopLeftRadius: space(3), borderTopRightRadius: space(3)},
-  under: {backgroundColor: color.line},
+  under: {backgroundColor: color.column},
   over: {backgroundColor: color.amber},
   barLine: {position: 'absolute', left: 0, right: 0, height: space(3), backgroundColor: color.muted},
   barText: {position: 'absolute', left: space(8), color: color.muted, fontSize: type.label},

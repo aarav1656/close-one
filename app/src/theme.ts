@@ -9,6 +9,8 @@ export const color = {
   amber: '#FFB400',
   amberDim: '#5A4300',
   line: '#26334F',
+  /** Chart columns under the bar: readable at 10 feet, still well below the amber over it. */
+  column: '#3E5079',
   go: '#4FD1A5',
   stop: '#FF7A6B',
 };

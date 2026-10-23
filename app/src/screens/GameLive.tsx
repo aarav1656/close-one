@@ -42,7 +42,9 @@ export const GameLive = ({game, bar, onBack}: {game: GameView | undefined; bar: 
           <Pressure value={game?.pressure ?? 0} />
         </View>
       )}
-      <Button preferred label="Back" onPress={onBack} />
+      <View style={styles.actions}>
+        <Button preferred label="Back" onPress={onBack} />
+      </View>
     </View>
   );
 };
@@ -54,4 +56,5 @@ const styles = StyleSheet.create({
   axis: {flexDirection: 'row', justifyContent: 'space-between', width: space(CHART_W), marginTop: space(10)},
   axisText: {color: color.muted, fontSize: type.label},
   now: {color: color.amber, fontWeight: '700'},
+  actions: {flexDirection: 'row'},
 });
