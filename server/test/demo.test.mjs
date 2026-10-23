@@ -26,6 +26,9 @@ test('demo prepare puts a paired household on a clean opted-in night, demo cue s
   assert.equal(cue.body.at, '4th 2:27');
   assert.equal(sent.length, 1);
   assert.match(sent[0][1].title, /^Bucks at Hawks$/);
+  const view = hub.state(rec).games.find(g => g.label === 'Bucks at Hawks');
+  assert.ok(view.trail.length > 50, `Watch joins with the game's pressure so far (${view.trail.length} updates)`);
+  assert.equal(view.trail.at(-1), view.pressure, 'the trail ends at the moment of the cue');
 });
 
 test('a second prepare resets the night so the demo can run again', () => {

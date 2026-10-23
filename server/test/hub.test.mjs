@@ -179,6 +179,18 @@ test('learning shifts list the biggest move first and at most two teams', async 
   await s.close();
 });
 
+test('a game keeps the pressure of its updates in order, capped at 120', () => {
+  const hub = new Hub({});
+  const rows = [{p: 4, c: 600, h: 90, a: 80}, {p: 4, c: 300, h: 95, a: 92}, {p: 4, c: 120, h: 100, a: 100}];
+  for (const r of rows) hub.show('g1', game, r, 'live');
+  const g = hub.view.get('g1');
+  assert.equal(g.trail.length, 3);
+  assert.ok(g.trail[0] < g.trail[1] && g.trail[1] < g.trail[2], `pressure rises as the game tightens: ${g.trail}`);
+  assert.equal(g.trail[2], g.pressure);
+  for (let i = 0; i < 200; i++) hub.show('g1', game, rows[i % 3], 'live');
+  assert.equal(hub.view.get('g1').trail.length, 120);
+});
+
 test('households, followed teams and tokens survive a restart', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'clutch-hub-'));
   const s1 = await boot({dir});

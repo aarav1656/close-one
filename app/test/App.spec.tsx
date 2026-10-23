@@ -384,6 +384,33 @@ describe('Close One app', () => {
     });
   });
 
+  describe('Watch', () => {
+    const cols = (r: ReactTestRenderer.ReactTestRenderer) =>
+      r.root.findAll(n => typeof n.type === 'string' && Array.isArray(n.props.style) && n.props.style.length === 3 && n.props.style[0]?.position === 'absolute' && n.props.style[0]?.bottom === 0);
+
+    it('joins with the clock left and the game so far as columns against the household bar', async () => {
+      const trail = Array.from({length: 80}, (_, i) => (i < 70 ? 0.2 : 0.8));
+      const r = await show({...baseState, games: [game({trail, clock: 147})]});
+      await press(r, 'Thunder at Spurs');
+      expect(asText(r)).toContain('Joining with 2:27 left in the 4th quarter');
+      expect(asText(r)).toContain('Your bar 35');
+      expect(asText(r)).toContain('80 updates ago');
+      const c = cols(r);
+      expect(c.length).toBe(trail.length);
+      expect(c.filter(n => n.props.style[2].backgroundColor === color.amber).length).toBe(10);
+      expect(controls(r).preferred).toEqual(['Back']);
+    });
+
+    it('an empty trail keeps the header and the meter and draws no chart', async () => {
+      const r = await show({...baseState, games: [game({trail: []})]});
+      await press(r, 'Thunder at Spurs');
+      expect(asText(r)).toContain('Joining with 3:12 left in the 4th quarter');
+      expect(asText(r)).toContain('Pressure on the next possession');
+      expect(asText(r)).not.toContain('updates ago');
+      expect(cols(r).length).toBe(0);
+    });
+  });
+
   it('server settings rejects an address that is not http(s) host and saves a good one', async () => {
     const r = await show(baseState);
     await press(r, 'Settings');

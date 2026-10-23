@@ -115,7 +115,7 @@ export const App = () => {
   }
   if (route.name === 'game') {
     const game = state?.games.find((g: GameView) => g.id === route.gameId);
-    return <GameLive game={game} onBack={() => setRoute({name: 'home'})} />;
+    return <GameLive game={game} bar={state?.learning.threshold ?? 0.3} onBack={() => setRoute({name: 'home'})} />;
   }
   if (route.name === 'onboarding') {
     if (route.step === 0) {

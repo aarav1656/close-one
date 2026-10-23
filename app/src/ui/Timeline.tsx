@@ -13,6 +13,22 @@ const Mark = ({kind, active}: {kind: 'rule' | 'clutch'; active: boolean}) => (
   <View style={[styles.mark, kind === 'rule' ? styles.rule : styles.clutch, active && styles.active]} />
 );
 
+/** Pressure as columns on a 0 to 60 scale, bright where it is over the bar, with the bar as a labelled line. Values are win chance a possession can swing. */
+export const Columns = ({series, bar, width, height, barLabel = `Bar ${pts(bar)}`}: {series: number[]; bar: number; width: number; height: number; barLabel?: string}) => {
+  const col = width / series.length;
+  const barAt = space((Math.min(bar, LEV_TOP) / LEV_TOP) * height);
+  return (
+    <View style={[styles.chart, {width: space(width), height: space(height)}]}>
+      {series.map((lev, i) => {
+        const h = Math.max(space(4), (Math.min(lev, LEV_TOP) / LEV_TOP) * space(height));
+        return <View key={i} style={[styles.col, {left: space(i * col), width: space(Math.max(1, col - 3)), height: h}, lev >= bar ? styles.over : styles.under]} />;
+      })}
+      <View style={[styles.barLine, {bottom: barAt}]} />
+      <Text style={[styles.barText, {bottom: barAt + space(6)}]}>{barLabel}</Text>
+    </View>
+  );
+};
+
 /**
  * One finished game on its own clock: the pressure on every possession as columns (bright over the bar),
  * the bar as a line, then a lane per rule with a mark at every alert it would have sent.
@@ -20,21 +36,13 @@ const Mark = ({kind, active}: {kind: 'rule' | 'clutch'; active: boolean}) => (
  */
 export const Timeline = ({data, selected}: {data: Showcase; selected: {kind: 'rule' | 'clutch'; index: number} | null}) => {
   const x = (t: number) => ((t - data.from) / (data.total - data.from)) * W;
-  const col = W / data.series.length;
   return (
     <View accessibilityLabel={`${data.label}: ${data.rule.length} simple alerts, ${data.clutch.length} Close One cues`}>
       <View style={styles.chartRow}>
         <View style={styles.yAxis}>
           <Text style={styles.axisText}>Pressure</Text>
         </View>
-        <View style={styles.chart}>
-          {data.series.map((lev, i) => {
-            const h = Math.max(space(4), (Math.min(lev, LEV_TOP) / LEV_TOP) * space(H));
-            return <View key={i} style={[styles.col, {left: space(i * col), width: space(col - 3), height: h}, lev >= data.bar ? styles.over : styles.under]} />;
-          })}
-          <View style={[styles.barLine, {bottom: space((data.bar / LEV_TOP) * H)}]} />
-          <Text style={[styles.barText, {bottom: space((data.bar / LEV_TOP) * H) + space(6)}]}>Bar {pts(data.bar)}</Text>
-        </View>
+        <Columns series={data.series} bar={data.bar} width={W} height={H} />
       </View>
       <View style={styles.quarters}>
         {data.ticks.map((tk, i) => (
@@ -63,7 +71,7 @@ const styles = StyleSheet.create({
   chartRow: {flexDirection: 'row'},
   yAxis: {width: space(LABEL_W), justifyContent: 'flex-end', paddingBottom: space(4)},
   axisText: {color: color.muted, fontSize: type.label},
-  chart: {width: space(W), height: space(H), borderBottomWidth: space(3), borderBottomColor: color.line},
+  chart: {borderBottomWidth: space(3), borderBottomColor: color.line},
   col: {position: 'absolute', bottom: 0, borderTopLeftRadius: space(3), borderTopRightRadius: space(3)},
   under: {backgroundColor: color.line},
   over: {backgroundColor: color.amber},

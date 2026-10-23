@@ -208,13 +208,17 @@ export class Hub {
     for (const rec of this.households.values()) rec.engine.ingest(gameId, meta, {...row}, ms);
   }
 
+  /** The game as the TV shows it, with the pressure of its last 120 updates so Watch can show how it got here. */
   show(id, meta, row, status, ms = this.now()) {
     const secs = secsLeft(row.p, row.c);
+    const pressure = Number(Math.min(1, leverage(row.h - row.a, secs) / 0.6).toFixed(2));
+    const prev = this.view.get(id);
     this.view.set(id, {
       id, at: ms, status, period: row.p, clock: row.c,
       home: nick(meta.home), away: nick(meta.away), homeAbbr: meta.home.abbr, awayAbbr: meta.away.abbr,
       label: `${nick(meta.away)} at ${nick(meta.home)}`,
-      pressure: Number(Math.min(1, leverage(row.h - row.a, secs) / 0.6).toFixed(2)),
+      pressure,
+      trail: [...(prev?.trail ?? []).slice(-119), pressure],
     });
   }
 

@@ -9,6 +9,8 @@ export interface GameView {
   period: number;
   clock: number;
   pressure: number;
+  /** Pressure of the game's recent updates, oldest first, on the same 0 to 1 scale. */
+  trail?: number[];
   followed: boolean;
 }
 export interface Card {
