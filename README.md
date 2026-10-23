@@ -104,7 +104,7 @@ The video sample comes to the front, Close One's service connects with its devic
 
 ## Toast over another app
 
-The app starts its service by URI on every launch (`app/src/App.tsx`: `Linking.openURL('pkg://com.clutch.tv.cue.service')`). The service (`app/src/headless/CueService.ts`) reads the device token and server address the app stored, opens the WebSocket, sends `hello`, and posts a `MenuToastRenderTemplate` toast for every cue frame (`app/src/notify/toast.ts`). The icon is the Close One mark the server hosts at `/assets/clutch-icon.png` (`server/assets/clutch-icon.png`).
+The app starts its service by URI on every launch (`app/src/App.tsx`: `Linking.openURL('pkg://com.clutch.tv.cue.service')`). The service (`app/src/headless/CueService.ts`) reads the device token and server address the app stored, opens the WebSocket, sends `hello`, and posts a `MenuToastRenderTemplate` toast for every cue frame (`app/src/notify/toast.ts`). The icon is the Close One mark (`server/assets/clutch-icon.png`), always handed to the renderer over https: an https cue server serves its own copy, and a cleartext dev server points at the published one (`iconUrl` in `app/src/notify/toast.ts`), because the renderer draws https icons only (FRICTION FL-017).
 
 ```bash
 scripts/fetch-video-sample.sh                       # builds and installs vega-video-sample (foreground app)

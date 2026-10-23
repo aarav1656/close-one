@@ -67,7 +67,7 @@ describe('cue service', () => {
     ws.onmessage?.({data: JSON.stringify({type: 'cue', id: 5, title: 'A at B is coming down to the wire', body: '4th quarter, 3:12 left.'})});
     await tick(10);
     expect(toast.postToast).toHaveBeenCalledTimes(1);
-    expect(toast.cueToast).toHaveBeenCalledWith('A at B is coming down to the wire', '4th quarter, 3:12 left.', 'http://10.0.2.2:38787/assets/clutch-icon.png', undefined);
+    expect(toast.cueToast).toHaveBeenCalledWith('A at B is coming down to the wire', '4th quarter, 3:12 left.', 'https://raw.githubusercontent.com/aarav1656/close-one/main/server/assets/clutch-icon.png', undefined);
     expect(ws.sent.map(m => m.type)).toEqual(['hello', 'recv', 'posted']);
   });
 

@@ -15,8 +15,11 @@ import {
 } from '@amazon-devices/react-native-kepler/Libraries/Components/ToastKepler/NotificationManagerUtils';
 import {APP_URI} from '../config';
 
-/** The icon the Close One server hosts. The renderer is another process: it draws http(s) icons and leaves a package path or data URI blank (measured on the VVD). */
-export const iconUrl = (serverUrl: string): string => `${serverUrl}/assets/clutch-icon.png`;
+/** The Close One mark, published with the source. The renderer is another process: it draws https icons and never requests a cleartext URL, a package path or a data URI (FRICTION FL-017). */
+export const ICON_HTTPS = 'https://raw.githubusercontent.com/aarav1656/close-one/main/server/assets/clutch-icon.png';
+/** A cue server on https serves its own copy; a dev server on cleartext http points at the published one. */
+export const iconUrl = (serverUrl: string): string =>
+  serverUrl.startsWith('https:') ? `${serverUrl}/assets/clutch-icon.png` : ICON_HTTPS;
 
 export const MENU_TOAST = 'MenuToastRenderTemplate';
 export const TOAST_SECONDS = 8;

@@ -60,10 +60,10 @@ export class Engine {
         gameId,
         team: team.abbr,
         ms,
-        // Short on purpose: the toast is a title line and two lines of body, with no icon beside it.
+        // Short on purpose: the toast is the Close One mark, a title line and a short body.
         title: `${nick(meta.away)} at ${nick(meta.home)}`,
         when: `${periodLabel(row.p)}, ${clockLabel(row.c)} left`,
-        body: `Coming down to the wire. ${periodLabel(row.p)}, ${clockLabel(row.c)} left. Menu opens Close One.`,
+        body: `Coming down to the wire. ${periodLabel(row.p)}, ${clockLabel(row.c)} left.`,
         lev,
         threshold,
         period: row.p,

@@ -86,7 +86,7 @@ test('a new household follows nothing and gets no cue; picking the team turns cu
   assert.equal(st.active.whyData.cuesLeft, 1);
   assert.equal(st.active.whyData.cap, 2);
   assert.ok(st.active.whyData.lev > st.active.whyData.threshold, 'a cue only goes out over the bar');
-  assert.match(st.active.body, /^Coming down to the wire\. 4th quarter, 2:00 left\. Menu opens Close One\.$/);
+  assert.match(st.active.body, /^Coming down to the wire\. 4th quarter, 2:00 left\.$/);
   assert.match(st.active.why, /next possession can move the win chance by \d+ points/);
   assert.doesNotMatch(st.active.why, /\d+-\d+/, 'the reason never carries a score');
   await s.close();

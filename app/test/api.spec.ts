@@ -95,7 +95,7 @@ describe('clockTime', () => {
 
 describe('toast', () => {
   it('draws its icon from the Close One server, never a third party', () => {
-    expect(iconUrl('http://10.0.2.2:38787')).toBe('http://10.0.2.2:38787/assets/clutch-icon.png');
+    expect(iconUrl('http://10.0.2.2:38787')).toBe('https://raw.githubusercontent.com/aarav1656/close-one/main/server/assets/clutch-icon.png');
     const t = cueToast('title', 'body', iconUrl('https://clutch.example.com'));
     expect(t.mIconUri).toBe('https://clutch.example.com/assets/clutch-icon.png');
     expect(t.mChannel.name).toBe('MenuToastRenderTemplate');
