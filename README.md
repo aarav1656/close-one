@@ -1,8 +1,31 @@
 # Close One for Fire TV (Vega OS)
 
-One quiet toast over whatever the household is watching, only when a game they follow turns into a one possession finish. No score in it. The TV learns how often this household wants to be interrupted.
+Nobody in the room misses the finish, and nobody's show gets wrecked by an alert. Close One puts one quiet toast over whatever the household is watching, only when a game someone follows turns into a one possession finish. The toast carries no score, and the TV learns how often this household wants to be interrupted.
 
-In the 632 games from Jan 15 on, Close One cues 0.48 times per game against 0.71 for the usual "within 5 points in the last 5 minutes" rule, 32% fewer interruptions, and stays silent in 68% of games. At the same cue budget with two minutes left to switch, it reaches 97 of the 104 games decided late where the best simple rule reaches 93. The bar was chosen on the 603 games before that date and the learning keeps every cue a household wanted while sending 25% fewer it dismissed (`server/eval/results.json`, `npm run test:eval`).
+![The Close One toast over a movie playing in vega-video-sample on the Vega Virtual Device: the Close One mark, "Bucks at Hawks", "Coming down to the wire. 4th quarter, 2:27 left."](evidence/demo/hero-toast-over-movie.png)
+
+Above: the system toast drawn over a title playing in `vega-video-sample` on the Vega Virtual Device, from a cue that travelled the real pipeline (`scripts/demo-vvd.sh`; full frame `evidence/demo/toast-over-video-20261023-201236.png`, timings `evidence/demo/timing-20261023-201236.json`).
+
+- **Fewer interruptions, the same finishes.** In the 632 games from Jan 15 on, Close One reaches 100 of the 104 games decided late, with 30 s or more left, on 0.48 cues per game, 32% fewer than the usual "within 5 points in the last 5 minutes" rule, which spends 0.71 cues per game to reach 102 of 104. Close One stays silent in 431 of the 632 games.
+- **At the same budget it reaches more.** Held to Close One's cues per game in those 632 games, with two minutes left to switch, Close One reaches 97 of the 104 late-decided games and the best simple rule, chosen on the 603 games before Jan 15, reaches 93.
+- **It learns the household, and says what it learned.** Over 155 replayed nights of a household that follows six teams and watches only the Knicks, learning sends 157 cues instead of 173: 100 dismissed instead of 133 (25% fewer) and 57 watched instead of 40. Home reads it back in plain words, "Hawks: bar 27, down from 30 after 1 watched." (`evidence/vvd-r4/home-learning.png`).
+- **The toast route is open source.** A headless service drawing a toast over another app is packaged as [vega-service-toast](https://github.com/aarav1656/vega-service-toast).
+
+Figures: `server/eval/results.json`, recomputed and asserted by `npm run test:eval`.
+
+```mermaid
+flowchart LR
+  subgraph TV["Fire TV, Vega OS"]
+    A["Interactive component<br/>com.clutch.tv.main"] -->|"Linking.openURL('pkg://com.clutch.tv.cue.service')"| S["Headless service<br/>app/src/headless/CueService.ts"]
+    S -->|"NotificationManager.post<br/>MenuToastRenderTemplate"| T["System toast drawn over<br/>vega-video-sample"]
+  end
+  subgraph CS["Cue server, Node"]
+    E["ESPN play-by-play"] --> M["Leverage model<br/>server/lib/model.mjs"]
+    M --> G["Household gate and learned bar<br/>server/lib/household.mjs"]
+    G --> H["Hub<br/>server/lib/hub.mjs"]
+  end
+  S <-->|"WebSocket, hello with the device token"| H
+```
 
 A React Native for Vega app (RN 0.83, Vega SDK 0.24) with a background service that holds a WebSocket and raises a system toast over the app on screen. It runs on the Vega Virtual Device (VVD).
 
@@ -41,18 +64,19 @@ The server checks these before the decision function runs (`gate()` in `server/l
 
 | Screen | What it shows | Evidence |
 |---|---|---|
-| Team picker | 30 teams on a D-pad grid, selected teams filled in amber, saved to the household | `evidence/vvd-r2/team-picker.png` |
-| Setup | Teams, quiet hours, Turn cues on: three steps before the first cue | `evidence/vvd-r3/setup-quiet-hours.png`, `evidence/vvd-r3/setup-turn-cues-on.png` |
-| Home | Games of the teams you follow with a pressure meter, interruptions left tonight, the learning bar, Pause tonight | `evidence/vvd-r2/home-game-pressure.png` |
-| Same game, two rules | One finished game on its own clock: the pressure on every possession, every alert the simple rule would have sent against the one Close One sent, and the reason for each | `evidence/vvd-r3/same-game-two-rules.png` |
-| After the game | What Close One did in the game that just ended: cues sent, watched, not now, and where the bar moved | `evidence/vvd-r3/post-game-summary.png` |
-| Settings | Cues on or off, pause tonight, quiet hours, teams, server address | `evidence/vvd-r3/settings.png` |
-| Learning bar | The household's bar on a 0 to 60 scale, where it started, and every cue tonight as a marker: green circle watched, coral diamond not now, ring waiting | `evidence/vvd-r2/learning-bar-dismissed-marker.png` |
-| Cue card | Watch, Not now, and Why this cue?: the pressure on the next possession against the household's bar, the cues left tonight, and the reason in plain words, with no score | `evidence/vvd-r3/why-this-cue.png` |
+| Team picker | 30 teams on a D-pad grid, selected teams filled in amber, saved to the household | `evidence/vvd-r4/team-picker.png` |
+| Setup | Teams, quiet hours, Turn cues on: three steps before the first cue | `evidence/vvd-r4/setup-teams.png`, `evidence/vvd-r4/setup-quiet-hours.png`, `evidence/vvd-r4/setup-turn-cues-on.png` |
+| Home | Games of the teams you follow with a pressure meter, interruptions left tonight, the learning bar with what the household taught it in plain words, Pause tonight | `evidence/vvd-r4/home-learning.png` |
+| Same game, two rules | One finished game on its own clock: the pressure on every possession, every alert the simple rule would have sent against the one Close One sent, and the reason for each | `evidence/vvd-r4/same-game-two-rules.png` |
+| After the game | What Close One did in the game that just ended: cues sent, watched, not now, and where the bar moved | `evidence/vvd-r4/post-game-summary.png` |
+| Settings | Cues on or off, pause tonight, quiet hours, teams, server address | `evidence/vvd-r4/settings.png` |
+| Learning bar | The household's bar on a 0 to 60 scale, where it started, and every cue tonight as a marker: green circle watched, coral diamond not now, ring waiting. Under it, each followed team whose bar moved, biggest move first: "Hawks: bar 27, down from 30 after 1 watched." (`learning.shifts` in `server/lib/hub.mjs`) | `evidence/vvd-r4/home-learning.png` |
+| Cue card | Watch, Not now, and Why this cue?: the pressure on the next possession against the household's bar, each label on its own mark, the cues left tonight, and the reason in plain words, with no score | `evidence/vvd-r4/cue-card.png`, `evidence/vvd-r4/why-this-cue.png` |
+| Watch | "Joining with 2:27 left in the 4th quarter", then the game's last 120 updates as pressure columns against the household's bar, bright where they crossed it | `evidence/vvd-r4/watch-joining.png` |
 | Quiet tonight | Three Not nows within an hour silence the night; a moon panel says so | `app/src/screens/Home.tsx`, `app/test/App.spec.tsx` |
-| Connection lost | Names the server and the retry count, keeps the last update visible | `evidence/vvd-r2/connection-lost.png` |
+| Connection lost | Names the server and the retry count, keeps the last update visible | `evidence/vvd-r4/connection-lost.png` |
 | Feed behind, no games tonight, loading | Each has its own copy and the next tip-off when there is one | `app/src/status.ts`, `app/src/screens/Home.tsx` |
-| Server | The address the household's server answers on, editable with a D-pad focusable field | `evidence/vvd-r2/server-settings-input-focused.png` |
+| Server | The address the household's server answers on, editable with a D-pad focusable field | `evidence/vvd-r4/server-settings.png` |
 
 Every control is reachable by D-pad, and each screen has exactly one first-focus target. The VVD focus log is `evidence/vvd-r2/dpad-focus-log.txt`; `app/test/App.spec.tsx` asserts the same per screen.
 
@@ -73,8 +97,8 @@ vega --version        # Active SDK Version: 0.24.12112
 ```bash
 cd app
 npm install
-npm run typecheck && npm test   # 41 tests
-npm run mutate                  # 21 breaks of the app's guards, each must turn jest red
+npm run typecheck && npm test   # 62 tests
+npm run mutate                  # 39 breaks of the app's guards, each must turn jest red
 npm run build:debug             # build/aarch64-debug/close-one-vega_aarch64.vpkg
 ```
 
@@ -100,7 +124,7 @@ scripts/vvd-up.sh && scripts/fetch-video-sample.sh   # once
 scripts/demo-vvd.sh
 ```
 
-The video sample comes to the front, Close One's service connects with its device token, one finished game (Bucks at Hawks, `server/showcase/401809247.json`) is driven through the real decision and the cue travels the authenticated socket. A title plays in the video sample, and the script exits 0 only when two frames two seconds apart differ (the picture is moving), the service acked the frame and the post, the system notification renderer claimed the screen 0 to 3000 ms after the send, and a frame with the toast over the playing video was saved: `evidence/demo/toast-over-video-*.png`. The TV clock is mapped onto the server's by a ping round trip, so `evidence/demo/timing-*.json` carries the send to receive, post and render times of the cue (2 ms, 38 ms and 177 ms in the committed run, `evidence/demo/timing-20261021-131633.json`). The toast is two short text lines with an Open Close One action.
+The video sample comes to the front, Close One's service connects with its device token, one finished game (Bucks at Hawks, `server/showcase/401809247.json`) is driven through the real decision and the cue travels the authenticated socket. A title plays in the video sample, and the script exits 0 only when two frames two seconds apart differ (the picture is moving), the service acked the frame and the post, the system notification renderer claimed the screen 0 to 3000 ms after the send, and a frame with the toast over the playing video was saved: `evidence/demo/toast-over-video-*.png`. The TV clock is mapped onto the server's by a ping round trip, so `evidence/demo/timing-*.json` carries the send to receive, post and render times of the cue (2 ms, 38 ms and 177 ms in the committed run, `evidence/demo/timing-20261021-131633.json`). The toast is the Close One mark, the game, and one line with the quarter and the clock, with an Open Close One action.
 
 ## Toast over another app
 
@@ -124,11 +148,11 @@ A Node server reads ESPN's NBA play-by-play every 10 s per live game, turns the 
 - `lib/household.mjs`: per team and hour threshold that moves on accept (down 0.03) and dismiss (up 0.05), a nightly cap (default 2), and a quiet night after 3 dismissals in an hour. State is saved per household under `data/households/`.
 - `lib/hub.mjs`, `lib/api.mjs`: households, tokens, followed teams, cue ownership and the HTTP and WebSocket surface.
 - `live.mjs`: ESPN polling, pushes cues to each household's devices, CSV logs in `logs/` (`decisions`, `cues`, `feedback`, `toasts`, `finals`, each with the household id). A cue nobody answers within 30 s counts as a dismissal.
-- The app opens on the cue card when the toast's Menu button brings it forward. Watch sends accept and opens the live pressure view. Not now sends dismiss.
+- The app opens on the cue card when the toast's Menu button brings it forward. Watch sends accept and opens the game, "Joining with 2:27 left in the 4th quarter", over the pressure of its last 120 updates (`trail` in `server/lib/hub.mjs`, `app/src/screens/GameLive.tsx`). Not now sends dismiss.
 
 ```bash
 cd server && npm install
-npm test                              # unit, HTTP and season tests, then 51 mutations that must each turn them red
+npm test                              # unit, HTTP and season tests, then 56 mutations that must each turn them red
 node live.mjs                         # live games for every paired household
 node live.mjs --demo                  # adds loopback-only calls that drive the finished showcase game (used by scripts/demo-vvd.sh)
 node live.mjs --replay 401809238 --speed 12 --skip 0.85   # a cached game through the same pipeline
